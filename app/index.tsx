@@ -136,7 +136,13 @@ export default function WelcomeScreen() {
 
           <View style={styles.servicesSection}>
             <Text style={styles.sectionTitle}>Popular Services</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.servicesScroll}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              style={styles.servicesScroll}
+              contentContainerStyle={styles.servicesContent}
+              nestedScrollEnabled={true}
+            >
               {services.map((service, index) => (
                 <TouchableOpacity
                   key={index}
@@ -336,6 +342,9 @@ const styles = StyleSheet.create({
   },
   servicesScroll: {
     paddingLeft: 20,
+  },
+  servicesContent: {
+    paddingRight: 20,
   },
   serviceCard: {
     width: 280,
