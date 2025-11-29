@@ -42,7 +42,7 @@ export default function WelcomeScreen() {
                 <View style={[styles.iconCircle, { backgroundColor: Colors.orange }]}>
                   <User size={40} color={Colors.white} strokeWidth={2.5} />
                 </View>
-                <Text style={styles.cardTitle}>I'm a Homeowner</Text>
+                <Text style={styles.cardTitle}>I&apos;m a Homeowner</Text>
                 <Text style={styles.cardDescription}>
                   Find verified renovation professionals and get quotes for your project
                 </Text>
@@ -59,7 +59,7 @@ export default function WelcomeScreen() {
                 <View style={[styles.iconCircle, { backgroundColor: Colors.deepBlue }]}>
                   <Hammer size={40} color={Colors.white} strokeWidth={2.5} />
                 </View>
-                <Text style={styles.cardTitle}>I'm a Professional</Text>
+                <Text style={styles.cardTitle}>I&apos;m a Professional</Text>
                 <Text style={styles.cardDescription}>
                   Connect with homeowners, showcase your work, and grow your business
                 </Text>

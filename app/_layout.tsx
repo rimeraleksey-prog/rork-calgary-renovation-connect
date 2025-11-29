@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppProvider } from "@/contexts/AppContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 
@@ -31,14 +32,16 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppProvider>
-        <SubscriptionProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <RootLayoutNav />
-          </GestureHandlerRootView>
-        </SubscriptionProvider>
-      </AppProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AppProvider>
+          <SubscriptionProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <RootLayoutNav />
+            </GestureHandlerRootView>
+          </SubscriptionProvider>
+        </AppProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
