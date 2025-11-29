@@ -50,7 +50,7 @@ export default function ProfileScreen() {
               <View style={styles.infoContent}>
                 <Text style={styles.infoLabel}>Service Areas</Text>
                 <Text style={styles.infoValue}>
-                  {myTraderProfile?.serviceAreas.join(', ') || 'All Calgary'}
+                  {myTraderProfile?.serviceAreas.join(', ') || 'All Areas'}
                 </Text>
               </View>
             </View>

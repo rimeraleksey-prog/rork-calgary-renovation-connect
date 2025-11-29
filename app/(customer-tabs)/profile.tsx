@@ -41,7 +41,7 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.infoRow}>
               <MapPin size={20} color={Colors.deepBlue} />
-              <Text style={styles.infoText}>Calgary, AB</Text>
+              <Text style={styles.infoText}>Alberta, Canada</Text>
             </View>
           </View>
         </View>

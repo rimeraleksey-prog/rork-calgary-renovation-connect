@@ -77,7 +77,7 @@ export default function SubscriptionPlansScreen() {
           <View style={styles.intro}>
             <Text style={styles.introTitle}>Grow Your Business</Text>
             <Text style={styles.introSubtitle}>
-              Choose the perfect plan for your contracting business in Calgary
+              Choose the perfect plan for your contracting business in Alberta
             </Text>
           </View>
 

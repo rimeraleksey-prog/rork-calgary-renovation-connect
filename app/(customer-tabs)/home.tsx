@@ -104,7 +104,7 @@ export default function CustomerHomeScreen() {
         )}
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Why Choose RenoCalgary</Text>
+          <Text style={styles.sectionTitle}>Why Choose Alberta Reno</Text>
           <View style={styles.featuresGrid}>
             {features.map((feature, index) => {
               const Icon = feature.icon;

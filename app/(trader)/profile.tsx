@@ -213,7 +213,7 @@ export default function ProfileScreen() {
                   onPress={() => toggleServiceArea(comm)}
                 >
                   <Text style={[styles.communityItemText, serviceAreas.includes(comm) && styles.communityItemTextActive]}>
-                    Calgary {comm}
+                    {comm}
                   </Text>
                 </TouchableOpacity>
               ))}

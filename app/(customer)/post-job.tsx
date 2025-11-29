@@ -173,7 +173,7 @@ export default function PostJobScreen() {
                   onPress={() => setCommunity(comm)}
                 >
                   <Text style={[styles.communityItemText, community === comm && styles.communityItemTextActive]}>
-                    Calgary {comm}
+                    {comm}
                   </Text>
                 </TouchableOpacity>
               ))}

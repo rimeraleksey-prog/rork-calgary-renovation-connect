@@ -14,6 +14,18 @@ export type TradeCategory =
 
 export type Community = 'NE' | 'NW' | 'SE' | 'SW' | 'All';
 
+export type City = 
+  | 'Calgary'
+  | 'Edmonton'
+  | 'Red Deer'
+  | 'Lethbridge'
+  | 'Medicine Hat'
+  | 'Grande Prairie'
+  | 'Airdrie'
+  | 'Spruce Grove'
+  | 'Leduc'
+  | 'Fort McMurray';
+
 export type ExperienceLevel = 'Entry' | 'Intermediate' | 'Expert';
 
 export type PriceRating = '$' | '$$' | '$$$';
@@ -24,6 +36,7 @@ export interface Trader {
   ownerName: string;
   category: TradeCategory;
   serviceAreas: Community[];
+  city?: City;
   experience: ExperienceLevel;
   certifications: string[];
   insured: boolean;
@@ -88,6 +101,7 @@ export interface Job {
   budgetRange: BudgetRange;
   timeline: Timeline;
   community: Community;
+  city?: City;
   address: string;
   postedDate: Date;
   status: 'open' | 'quoted' | 'in-progress' | 'completed';
@@ -100,6 +114,7 @@ export interface Customer {
   phone: string;
   address: string;
   community: Community;
+  city?: City;
 }
 
 export interface UnlockedLead {

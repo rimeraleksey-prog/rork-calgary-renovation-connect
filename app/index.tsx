@@ -59,8 +59,8 @@ export default function WelcomeScreen() {
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <Text style={styles.logo}>RenoCalgary</Text>
-            <Text style={styles.tagline}>Find trusted renovation professionals in Calgary</Text>
+            <Text style={styles.logo}>Alberta Reno</Text>
+            <Text style={styles.tagline}>Connecting Alberta homeowners with trusted renovation professionals</Text>
           </View>
 
           <View style={styles.heroSection}>
@@ -72,7 +72,7 @@ export default function WelcomeScreen() {
               />
               <View style={styles.heroOverlay}>
                 <Text style={styles.heroTitle}>Transform Your Home</Text>
-                <Text style={styles.heroSubtitle}>Connect with Calgary&apos;s best renovation pros</Text>
+                <Text style={styles.heroSubtitle}>Connect with Alberta&apos;s best renovation pros</Text>
               </View>
             </View>
           </View>
@@ -167,9 +167,9 @@ export default function WelcomeScreen() {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerTitle}>Serving All Calgary</Text>
-            <Text style={styles.footerCommunities}>NE • NW • SE • SW</Text>
-            <Text style={styles.footerCopyright}>© 2025 RenoCalgary</Text>
+            <Text style={styles.footerTitle}>Serving All Alberta</Text>
+            <Text style={styles.footerCommunities}>Calgary • Edmonton • Red Deer • Lethbridge</Text>
+            <Text style={styles.footerCopyright}>© 2025 Alberta Renovation Connect</Text>
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -93,7 +93,7 @@ export default function ContractorDetailScreen() {
                 {trader.serviceAreas.map((area) => (
                   <View key={area} style={styles.serviceArea}>
                     <MapPin size={16} color={Colors.deepBlue} />
-                    <Text style={styles.serviceAreaText}>Calgary {area}</Text>
+                    <Text style={styles.serviceAreaText}>{area}</Text>
                   </View>
                 ))}
               </View>
