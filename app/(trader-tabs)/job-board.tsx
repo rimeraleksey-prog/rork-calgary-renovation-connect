@@ -2,18 +2,21 @@ import { StyleSheet, Text, View, TouchableOpacity, Platform, ScrollView, Alert }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { MapPin, DollarSign, Clock, Lock, Crown, Zap } from 'lucide-react-native';
+import { MapPin, DollarSign, Clock, Lock, Crown, Zap, Filter } from 'lucide-react-native';
 import { useFilteredJobs, useApp } from '@/contexts/AppContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { TradeCategory, Community } from '@/types';
+import { TradeCategory, Community, HandymanComplexity, CleaningType } from '@/types';
 import { LeadUnlockPrompt, LimitReachedPrompt } from '@/components/UpgradePrompts';
 import { PAY_PER_LEAD_PRICE } from '@/constants/subscription';
 import Colors from '@/constants/colors';
 
 export default function JobBoardScreen() {
-  const [category] = useState<TradeCategory | 'All'>('All');
+  const [category, setCategory] = useState<TradeCategory | 'All'>('All');
   const [community] = useState<Community>('All');
-  const jobs = useFilteredJobs(category, community, 0);
+  const [handymanComplexity, setHandymanComplexity] = useState<HandymanComplexity | 'All'>('All');
+  const [cleaningType, setCleaningType] = useState<CleaningType | 'All'>('All');
+  const [showFilters, setShowFilters] = useState(false);
+  const jobs = useFilteredJobs(category, community, 0, handymanComplexity, cleaningType);
   const { isLeadUnlocked, canRespondToJob, recordJobResponse, myTraderProfile } = useApp();
   const { canAccessLeads, remainingLeads, purchaseLead, currentPlan } = useSubscription();
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
@@ -62,6 +65,12 @@ export default function JobBoardScreen() {
           <Text style={styles.headerTitle}>Job Board</Text>
           <View style={styles.headerActions}>
             <TouchableOpacity 
+              style={styles.filterButton}
+              onPress={() => setShowFilters(!showFilters)}
+            >
+              <Filter size={18} color={Colors.deepBlue} />
+            </TouchableOpacity>
+            <TouchableOpacity 
               style={styles.subscriptionButton}
               onPress={() => router.push('/(trader-tabs)/subscription' as any)}
             >
@@ -76,6 +85,98 @@ export default function JobBoardScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {showFilters && (
+          <View style={styles.filtersContainer}>
+            <View style={styles.filterRow}>
+              <Text style={styles.filterLabel}>Category</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterChips}>
+                <TouchableOpacity
+                  style={[styles.chip, category === 'All' && styles.chipActive]}
+                  onPress={() => setCategory('All')}
+                >
+                  <Text style={[styles.chipText, category === 'All' && styles.chipTextActive]}>All</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.chip, category === 'Handyman Services' && styles.chipActive]}
+                  onPress={() => setCategory('Handyman Services')}
+                >
+                  <Text style={[styles.chipText, category === 'Handyman Services' && styles.chipTextActive]}>Handyman</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.chip, category === 'Cleaning Services' && styles.chipActive]}
+                  onPress={() => setCategory('Cleaning Services')}
+                >
+                  <Text style={[styles.chipText, category === 'Cleaning Services' && styles.chipTextActive]}>Cleaning</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+
+            {category === 'Handyman Services' && (
+              <View style={styles.filterRow}>
+                <Text style={styles.filterLabel}>Complexity</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterChips}>
+                  <TouchableOpacity
+                    style={[styles.chip, handymanComplexity === 'All' && styles.chipActive]}
+                    onPress={() => setHandymanComplexity('All')}
+                  >
+                    <Text style={[styles.chipText, handymanComplexity === 'All' && styles.chipTextActive]}>All</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chip, handymanComplexity === 'Small Fix' && styles.chipActive]}
+                    onPress={() => setHandymanComplexity('Small Fix')}
+                  >
+                    <Text style={[styles.chipText, handymanComplexity === 'Small Fix' && styles.chipTextActive]}>Small Fix</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chip, handymanComplexity === 'Medium Repair' && styles.chipActive]}
+                    onPress={() => setHandymanComplexity('Medium Repair')}
+                  >
+                    <Text style={[styles.chipText, handymanComplexity === 'Medium Repair' && styles.chipTextActive]}>Medium Repair</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chip, handymanComplexity === 'Large Task' && styles.chipActive]}
+                    onPress={() => setHandymanComplexity('Large Task')}
+                  >
+                    <Text style={[styles.chipText, handymanComplexity === 'Large Task' && styles.chipTextActive]}>Large Task</Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            )}
+
+            {category === 'Cleaning Services' && (
+              <View style={styles.filterRow}>
+                <Text style={styles.filterLabel}>Type</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterChips}>
+                  <TouchableOpacity
+                    style={[styles.chip, cleaningType === 'All' && styles.chipActive]}
+                    onPress={() => setCleaningType('All')}
+                  >
+                    <Text style={[styles.chipText, cleaningType === 'All' && styles.chipTextActive]}>All</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chip, cleaningType === 'Standard' && styles.chipActive]}
+                    onPress={() => setCleaningType('Standard')}
+                  >
+                    <Text style={[styles.chipText, cleaningType === 'Standard' && styles.chipTextActive]}>Standard</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chip, cleaningType === 'Deep Cleaning' && styles.chipActive]}
+                    onPress={() => setCleaningType('Deep Cleaning')}
+                  >
+                    <Text style={[styles.chipText, cleaningType === 'Deep Cleaning' && styles.chipTextActive]}>Deep Cleaning</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chip, cleaningType === 'Move-in/Move-out' && styles.chipActive]}
+                    onPress={() => setCleaningType('Move-in/Move-out')}
+                  >
+                    <Text style={[styles.chipText, cleaningType === 'Move-in/Move-out' && styles.chipTextActive]}>Move-in/out</Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        )}
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.list}>
@@ -93,6 +194,12 @@ export default function JobBoardScreen() {
                   <View style={styles.cardHeader}>
                     <View style={styles.cardHeaderLeft}>
                       <Text style={styles.projectType}>{job.projectType}</Text>
+                      {job.handymanComplexity && (
+                        <Text style={styles.jobSubType}>{job.handymanComplexity}</Text>
+                      )}
+                      {job.cleaningType && (
+                        <Text style={styles.jobSubType}>{job.cleaningType}</Text>
+                      )}
                       <Text style={styles.customerName}>by {job.customerName}</Text>
                     </View>
                     <View style={styles.statusBadge}>
@@ -202,6 +309,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  filterButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.offWhite,
+    borderRadius: 10,
   },
   subscriptionButton: {
     flexDirection: 'row',
@@ -378,5 +493,48 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 15,
     fontWeight: '700' as const,
+  },
+  filtersContainer: {
+    backgroundColor: Colors.white,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  filterRow: {
+    marginBottom: 12,
+  },
+  filterLabel: {
+    fontSize: 13,
+    fontWeight: '600' as const,
+    color: Colors.textPrimary,
+    marginBottom: 8,
+  },
+  filterChips: {
+    flexDirection: 'row',
+  },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: Colors.offWhite,
+    marginRight: 8,
+  },
+  chipActive: {
+    backgroundColor: Colors.deepBlue,
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: '600' as const,
+    color: Colors.textSecondary,
+  },
+  chipTextActive: {
+    color: Colors.white,
+  },
+  jobSubType: {
+    fontSize: 12,
+    color: Colors.orange,
+    fontWeight: '600' as const,
+    marginTop: 2,
   },
 });

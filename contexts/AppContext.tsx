@@ -373,26 +373,81 @@ export function useFilteredTraders(
 export function useFilteredJobs(
   category: TradeCategory | 'All',
   community: Community,
-  budgetMin: number
+  budgetMin: number,
+  handymanComplexity?: 'Small Fix' | 'Medium Repair' | 'Large Task' | 'All',
+  cleaningType?: 'Standard' | 'Deep Cleaning' | 'Move-in/Move-out' | 'All'
 ) {
-  const { jobs } = useApp();
+  const { jobs, myTraderProfile } = useApp();
 
   return useMemo(() => {
     return jobs.filter((job) => {
-      if (category !== 'All') {
-        const categoryMap: Record<string, ProjectType[]> = {
-          'General Contractor': ['Kitchen Renovation', 'Bathroom Renovation', 'Basement Finishing', 'Room Addition'],
-          'Electrician': ['Electrical Work'],
-          'Plumber': ['Plumbing', 'Bathroom Renovation', 'Kitchen Renovation'],
-          'Carpenter': ['Basement Finishing', 'Room Addition'],
-          'Painter': ['Painting'],
-          'Roofer': ['Roofing'],
-          'HVAC': ['HVAC'],
-          'Flooring': ['Flooring'],
-        };
+      if (myTraderProfile) {
+        const traderCategory = myTraderProfile.category;
+        const jobCategory = job.tradeCategory || job.projectType;
+        
+        if (traderCategory === 'Handyman Services' && jobCategory !== 'Handyman Services') {
+          return false;
+        }
+        if (traderCategory === 'Cleaning Services' && jobCategory !== 'Cleaning Services') {
+          return false;
+        }
+        if (traderCategory !== 'Handyman Services' && traderCategory !== 'Cleaning Services') {
+          const categoryMap: Record<string, ProjectType[]> = {
+            'General Contractor': ['Kitchen Renovation', 'Bathroom Renovation', 'Basement Finishing', 'Room Addition'],
+            'Electrician': ['Electrical Work'],
+            'Plumber': ['Plumbing', 'Bathroom Renovation', 'Kitchen Renovation'],
+            'Carpenter': ['Basement Finishing', 'Room Addition'],
+            'Painter': ['Painting'],
+            'Roofer': ['Roofing'],
+            'HVAC': ['HVAC'],
+            'Flooring': ['Flooring'],
+            'Landscaping': ['Landscaping'],
+            'Kitchen & Bath': ['Kitchen Renovation', 'Bathroom Renovation'],
+          };
 
-        const relevantTypes = categoryMap[category] || [];
-        if (!relevantTypes.includes(job.projectType)) {
+          const relevantTypes = categoryMap[traderCategory] || [];
+          if (!relevantTypes.includes(job.projectType)) {
+            return false;
+          }
+        }
+      }
+
+      if (category !== 'All') {
+        if (job.tradeCategory && job.tradeCategory !== category) {
+          return false;
+        }
+        
+        if (!job.tradeCategory) {
+          const categoryMap: Record<string, ProjectType[]> = {
+            'General Contractor': ['Kitchen Renovation', 'Bathroom Renovation', 'Basement Finishing', 'Room Addition'],
+            'Electrician': ['Electrical Work'],
+            'Plumber': ['Plumbing', 'Bathroom Renovation', 'Kitchen Renovation'],
+            'Carpenter': ['Basement Finishing', 'Room Addition'],
+            'Painter': ['Painting'],
+            'Roofer': ['Roofing'],
+            'HVAC': ['HVAC'],
+            'Flooring': ['Flooring'],
+            'Landscaping': ['Landscaping'],
+            'Kitchen & Bath': ['Kitchen Renovation', 'Bathroom Renovation'],
+            'Handyman Services': ['Handyman Services'],
+            'Cleaning Services': ['Cleaning Services'],
+          };
+
+          const relevantTypes = categoryMap[category] || [];
+          if (!relevantTypes.includes(job.projectType)) {
+            return false;
+          }
+        }
+      }
+
+      if (handymanComplexity && handymanComplexity !== 'All' && job.tradeCategory === 'Handyman Services') {
+        if (job.handymanComplexity !== handymanComplexity) {
+          return false;
+        }
+      }
+
+      if (cleaningType && cleaningType !== 'All' && job.tradeCategory === 'Cleaning Services') {
+        if (job.cleaningType !== cleaningType) {
           return false;
         }
       }
@@ -403,5 +458,5 @@ export function useFilteredJobs(
 
       return true;
     });
-  }, [jobs, category, community]);
+  }, [jobs, category, community, handymanComplexity, cleaningType, myTraderProfile]);
 }

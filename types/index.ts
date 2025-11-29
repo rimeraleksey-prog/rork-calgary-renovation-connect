@@ -46,6 +46,8 @@ export type HandymanService =
   | 'Caulking'
   | 'Shelf Installation';
 
+export type HandymanComplexity = 'Small Fix' | 'Medium Repair' | 'Large Task';
+
 export type CleaningService = 
   | 'Standard Cleaning'
   | 'Deep Cleaning'
@@ -53,6 +55,8 @@ export type CleaningService =
   | 'Post-renovation Cleaning'
   | 'Airbnb Turnover'
   | 'Carpet Cleaning';
+
+export type CleaningType = 'Standard' | 'Deep Cleaning' | 'Move-in/Move-out';
 
 export interface Trader {
   id: string;
@@ -137,6 +141,9 @@ export interface Job {
   address: string;
   postedDate: Date;
   status: 'open' | 'quoted' | 'in-progress' | 'completed';
+  tradeCategory?: TradeCategory;
+  handymanComplexity?: HandymanComplexity;
+  cleaningType?: CleaningType;
 }
 
 export interface Customer {
