@@ -9,7 +9,9 @@ export default function ProfileScreen() {
   const { setUserRole, favoriteTraders } = useApp();
 
   const handleSignOut = async () => {
+    console.log('Customer: Signing out...');
     await setUserRole(null);
+    console.log('Customer: Role set to null, navigating to home');
     router.replace('/');
   };
 
