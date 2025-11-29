@@ -328,6 +328,7 @@ const styles = StyleSheet.create({
     color: Colors.deepBlue,
   },
   featuresGrid: {
+    flexDirection: 'column',
     gap: 12,
   },
   featureCard: {
