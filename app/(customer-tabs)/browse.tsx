@@ -48,7 +48,7 @@ export default function BrowseScreen() {
         <View style={styles.headerLeft}>
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => router.push('/(customer-tabs)/home' as any)}
+            onPress={() => router.back()}
             activeOpacity={0.7}
           >
             <ArrowLeft size={24} color={Colors.textPrimary} />
