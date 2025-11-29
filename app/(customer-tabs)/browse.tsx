@@ -250,7 +250,7 @@ export default function BrowseScreen() {
                           community === comm && styles.filterOptionTextActive,
                         ]}
                       >
-                        {comm === 'All' ? 'All Areas' : `Calgary ${comm}`}
+                        {comm === 'All' ? 'All Areas' : comm}
                       </Text>
                     </TouchableOpacity>
                   ))}

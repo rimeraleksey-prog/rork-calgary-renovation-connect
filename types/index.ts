@@ -24,7 +24,10 @@ export type City =
   | 'Airdrie'
   | 'Spruce Grove'
   | 'Leduc'
-  | 'Fort McMurray';
+  | 'Fort McMurray'
+  | 'Camrose'
+  | 'Brooks'
+  | 'Lloydminster';
 
 export type ExperienceLevel = 'Entry' | 'Intermediate' | 'Expert';
 

@@ -3,7 +3,7 @@ import { Trader, Job } from '@/types';
 export const mockTraders: Trader[] = [
   {
     id: '1',
-    businessName: 'Alberta Elite Renovations',
+    businessName: 'Elite Renovations',
     ownerName: 'Michael Chen',
     category: 'General Contractor',
     serviceAreas: ['NW', 'NE', 'SW'],
@@ -15,7 +15,7 @@ export const mockTraders: Trader[] = [
       'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800',
       'https://images.unsplash.com/photo-1615873968403-89e068629265?w=800',
     ],
-    description: 'Full-service general contractor specializing in high-end residential renovations. Over 15 years of experience transforming Alberta homes.',
+    description: 'Full-service general contractor specializing in high-end residential renovations. Over 15 years of experience transforming homes across Alberta.',
     priceRating: '$$$',
     rating: 4.9,
     reviewCount: 127,
@@ -29,7 +29,7 @@ export const mockTraders: Trader[] = [
   },
   {
     id: '2',
-    businessName: 'Alberta Electrical Solutions',
+    businessName: 'Electrical Solutions',
     ownerName: 'Sarah Thompson',
     category: 'Electrician',
     serviceAreas: ['NE', 'NW', 'SE', 'SW'],
