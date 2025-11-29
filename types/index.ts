@@ -10,7 +10,9 @@ export type TradeCategory =
   | 'HVAC'
   | 'Flooring'
   | 'Landscaping'
-  | 'Kitchen & Bath';
+  | 'Kitchen & Bath'
+  | 'Handyman Services'
+  | 'Cleaning Services';
 
 export type Community = 'NE' | 'NW' | 'SE' | 'SW' | 'All';
 
@@ -79,6 +81,8 @@ export type ProjectType =
   | 'HVAC'
   | 'Landscaping'
   | 'General Repairs'
+  | 'Handyman Services'
+  | 'Cleaning Services'
   | 'Other';
 
 export type BudgetRange = 

@@ -28,6 +28,10 @@ export default function BrowseScreen() {
     'Roofer',
     'HVAC',
     'Flooring',
+    'Landscaping',
+    'Kitchen & Bath',
+    'Handyman Services',
+    'Cleaning Services',
   ];
 
   const communities: Community[] = ['All', 'NE', 'NW', 'SE', 'SW'];

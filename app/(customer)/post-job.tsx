@@ -20,6 +20,8 @@ const PROJECT_TYPES: ProjectType[] = [
   'HVAC',
   'Landscaping',
   'General Repairs',
+  'Handyman Services',
+  'Cleaning Services',
   'Other',
 ];
 

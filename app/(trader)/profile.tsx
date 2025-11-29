@@ -19,6 +19,8 @@ const TRADE_CATEGORIES: TradeCategory[] = [
   'Flooring',
   'Landscaping',
   'Kitchen & Bath',
+  'Handyman Services',
+  'Cleaning Services',
 ];
 
 const EXPERIENCE_LEVELS: ExperienceLevel[] = ['Entry', 'Intermediate', 'Expert'];
