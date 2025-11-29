@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Platform, ScrollView, Alert }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { useState } from 'react';
-import { MapPin, DollarSign, Clock, User, Lock, Crown, Zap } from 'lucide-react-native';
+import { MapPin, DollarSign, Clock, User, Lock, Crown, Zap, Home } from 'lucide-react-native';
 import { useFilteredJobs, useApp } from '@/contexts/AppContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { TradeCategory, Community } from '@/types';
@@ -64,7 +64,15 @@ export default function JobsScreen() {
       />
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Available Jobs</Text>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity 
+              style={styles.homeButton}
+              onPress={() => router.replace('/')}
+            >
+              <Home size={20} color={Colors.deepBlue} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Available Jobs</Text>
+          </View>
           <View style={styles.headerActions}>
             <TouchableOpacity 
               style={styles.subscriptionButton}
@@ -214,6 +222,20 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  homeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.offWhite,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerActions: {
     flexDirection: 'row',

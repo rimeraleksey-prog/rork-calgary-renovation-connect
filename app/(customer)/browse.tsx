@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { Stack, router } from 'expo-router';
 import { useState } from 'react';
-import { Search, Filter, Star, MapPin, Heart, Crown } from 'lucide-react-native';
+import { Search, Filter, Star, MapPin, Heart, Crown, Home } from 'lucide-react-native';
 import { useFilteredTraders, useApp } from '@/contexts/AppContext';
 import { TradeCategory, Community, PriceRating } from '@/types';
 import Colors from '@/constants/colors';
@@ -54,7 +54,15 @@ export default function BrowseScreen() {
       />
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Find a Pro</Text>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity 
+              style={styles.homeButton}
+              onPress={() => router.replace('/')}
+            >
+              <Home size={20} color={Colors.deepBlue} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Find a Pro</Text>
+          </View>
           <TouchableOpacity 
             style={styles.postJobButton}
             onPress={() => router.push('/(customer)/post-job' as any)}
@@ -324,6 +332,20 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  homeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.offWhite,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 28,
