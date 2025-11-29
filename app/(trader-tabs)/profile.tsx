@@ -86,19 +86,12 @@ export default function ProfileScreen() {
             style={styles.button}
             onPress={() => router.push('/(trader)/profile')}
           >
-            <Text style={styles.buttonText}>Edit Profile</Text>
+            <Text style={styles.buttonText}>My Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.buttonOutline}
-            onPress={() => console.log('Portfolio - Coming soon')}
-          >
-            <Text style={styles.buttonOutlineText}>Portfolio</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.buttonOutline}
-            onPress={() => console.log('Settings - Coming soon')}
+            onPress={() => router.push('/settings')}
           >
             <Text style={styles.buttonOutlineText}>Settings</Text>
           </TouchableOpacity>

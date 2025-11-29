@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { useState } from 'react';
-import { ArrowLeft, Save, Crown, Zap, Star, Settings } from 'lucide-react-native';
+import { ArrowLeft, Save, Crown, Zap, Star, Settings, Plus, X } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { TradeCategory, ExperienceLevel, PriceRating, City, Trader } from '@/types';
@@ -53,12 +53,57 @@ export default function ProfileScreen() {
   const [phone, setPhone] = useState(myTraderProfile?.phone || '');
   const [email, setEmail] = useState(myTraderProfile?.email || '');
   const [yearsInBusiness, setYearsInBusiness] = useState(myTraderProfile?.yearsInBusiness?.toString() || '');
+  const [portfolioImages, setPortfolioImages] = useState<string[]>(myTraderProfile?.portfolioImages || []);
+  const [uploadingImage] = useState(false);
 
   const toggleServiceCity = (city: City) => {
     setServiceCities((prev) => 
       prev.includes(city)
         ? prev.filter((c) => c !== city)
         : [...prev, city]
+    );
+  };
+
+  const handleAddPortfolioImage = () => {
+    Alert.prompt(
+      'Add Portfolio Image',
+      'Enter image URL (or use a photo from your device)',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Add URL',
+          onPress: (url?: string) => {
+            if (url && url.trim()) {
+              setPortfolioImages((prev) => [...prev, url.trim()]);
+            }
+          },
+        },
+      ],
+      'plain-text',
+      'https://images.unsplash.com/photo-example'
+    );
+  };
+
+  const handleRemovePortfolioImage = (index: number) => {
+    Alert.alert(
+      'Remove Image',
+      'Are you sure you want to remove this image from your portfolio?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: () => {
+            setPortfolioImages((prev) => prev.filter((_, i) => i !== index));
+          },
+        },
+      ]
     );
   };
 
@@ -79,9 +124,7 @@ export default function ProfileScreen() {
       experience,
       certifications: myTraderProfile?.certifications || [],
       insured: myTraderProfile?.insured || true,
-      portfolioImages: myTraderProfile?.portfolioImages || [
-        'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800',
-      ],
+      portfolioImages,
       description,
       priceRating,
       rating: myTraderProfile?.rating || 5.0,
@@ -294,6 +337,46 @@ export default function ProfileScreen() {
               autoCapitalize="none"
               placeholderTextColor={Colors.grayLight}
             />
+          </View>
+
+          <View style={styles.section}>
+            <View style={styles.portfolioHeader}>
+              <Text style={styles.label}>Portfolio Images</Text>
+              <TouchableOpacity 
+                style={styles.addPortfolioButton}
+                onPress={handleAddPortfolioImage}
+                disabled={uploadingImage}
+              >
+                <Plus size={16} color={Colors.white} />
+                <Text style={styles.addPortfolioButtonText}>Add Image</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.portfolioDescription}>
+              Showcase your best work to attract more customers
+            </Text>
+            <View style={styles.portfolioGrid}>
+              {portfolioImages.map((imageUrl, index) => (
+                <View key={index} style={styles.portfolioImageContainer}>
+                  <Image 
+                    source={{ uri: imageUrl }} 
+                    style={styles.portfolioImage}
+                    resizeMode="cover"
+                  />
+                  <TouchableOpacity 
+                    style={styles.removeImageButton}
+                    onPress={() => handleRemovePortfolioImage(index)}
+                  >
+                    <X size={16} color={Colors.white} />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              {portfolioImages.length === 0 && (
+                <View style={styles.emptyPortfolio}>
+                  <Text style={styles.emptyPortfolioText}>No portfolio images yet</Text>
+                  <Text style={styles.emptyPortfolioSubtext}>Add images to showcase your work</Text>
+                </View>
+              )}
+            </View>
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSave}>
@@ -522,5 +605,76 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 17,
     fontWeight: '700' as const,
+  },
+  portfolioHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  addPortfolioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Colors.deepBlue,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  addPortfolioButtonText: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: '600' as const,
+  },
+  portfolioDescription: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginBottom: 16,
+  },
+  portfolioGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  portfolioImageContainer: {
+    width: '48%',
+    aspectRatio: 1,
+    borderRadius: 12,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: Colors.offWhite,
+  },
+  portfolioImage: {
+    width: '100%',
+    height: '100%',
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyPortfolio: {
+    width: '100%',
+    paddingVertical: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.offWhite,
+    borderRadius: 12,
+  },
+  emptyPortfolioText: {
+    fontSize: 15,
+    fontWeight: '600' as const,
+    color: Colors.textPrimary,
+    marginBottom: 4,
+  },
+  emptyPortfolioSubtext: {
+    fontSize: 13,
+    color: Colors.textSecondary,
   },
 });

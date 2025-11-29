@@ -118,9 +118,10 @@ export interface Customer {
   name: string;
   email: string;
   phone: string;
-  address: string;
-  community: Community;
+  address?: string;
+  community?: Community;
   city?: City;
+  region?: string;
 }
 
 export interface UnlockedLead {

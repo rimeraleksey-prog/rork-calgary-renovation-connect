@@ -6,7 +6,7 @@ import { useApp } from '@/contexts/AppContext';
 import Colors from '@/constants/colors';
 
 export default function ProfileScreen() {
-  const { setUserRole, favoriteTraders } = useApp();
+  const { setUserRole, favoriteTraders, myCustomerProfile } = useApp();
 
   const handleSignOut = async () => {
     console.log('Customer: Signing out...');
@@ -26,8 +26,8 @@ export default function ProfileScreen() {
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>JD</Text>
           </View>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.email}>john.doe@example.com</Text>
+          <Text style={styles.name}>{myCustomerProfile?.name || 'John Doe'}</Text>
+          <Text style={styles.email}>{myCustomerProfile?.email || 'john.doe@example.com'}</Text>
         </View>
 
         <View style={styles.section}>
@@ -35,15 +35,17 @@ export default function ProfileScreen() {
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
               <Mail size={20} color={Colors.deepBlue} />
-              <Text style={styles.infoText}>john.doe@example.com</Text>
+              <Text style={styles.infoText}>{myCustomerProfile?.email || 'Not set'}</Text>
             </View>
             <View style={styles.infoRow}>
               <Phone size={20} color={Colors.deepBlue} />
-              <Text style={styles.infoText}>(403) 555-0123</Text>
+              <Text style={styles.infoText}>{myCustomerProfile?.phone || 'Not set'}</Text>
             </View>
             <View style={styles.infoRow}>
               <MapPin size={20} color={Colors.deepBlue} />
-              <Text style={styles.infoText}>Alberta, Canada</Text>
+              <Text style={styles.infoText}>
+                {myCustomerProfile?.city ? `${myCustomerProfile.city}${myCustomerProfile.region ? ` (${myCustomerProfile.region})` : ''}` : 'Not set'}
+              </Text>
             </View>
           </View>
         </View>
@@ -67,14 +69,14 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <TouchableOpacity 
             style={styles.button}
-            onPress={() => console.log('Edit Profile - Coming soon')}
+            onPress={() => router.push('/my-profile')}
           >
-            <Text style={styles.buttonText}>Edit Profile</Text>
+            <Text style={styles.buttonText}>My Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.buttonOutline}
-            onPress={() => console.log('Settings - Coming soon')}
+            onPress={() => router.push('/settings')}
           >
             <Text style={styles.buttonOutlineText}>Settings</Text>
           </TouchableOpacity>

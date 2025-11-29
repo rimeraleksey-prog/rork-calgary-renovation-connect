@@ -1,7 +1,7 @@
 import createContextHook from '@nkzw/create-context-hook';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { UserRole, Trader, Job, Community, TradeCategory, PriceRating, ProjectType, UnlockedLead } from '@/types';
+import { UserRole, Trader, Job, Community, TradeCategory, PriceRating, ProjectType, UnlockedLead, Customer } from '@/types';
 import { mockTraders, mockJobs } from '@/mocks/data';
 import { SubscriptionTier } from '@/constants/subscription';
 
@@ -13,6 +13,8 @@ export interface AppState {
   addJob: (job: Job) => void;
   updateTraderProfile: (trader: Trader) => void;
   myTraderProfile: Trader | null;
+  myCustomerProfile: Customer | null;
+  updateCustomerProfile: (customer: Customer) => void;
   favoriteTraders: string[];
   toggleFavorite: (traderId: string) => void;
   isLoading: boolean;
@@ -36,6 +38,7 @@ export const [AppProvider, useApp] = createContextHook(() => {
   const [traders, setTraders] = useState<Trader[]>(mockTraders);
   const [jobs, setJobs] = useState<Job[]>(mockJobs);
   const [myTraderProfile, setMyTraderProfile] = useState<Trader | null>(null);
+  const [myCustomerProfile, setMyCustomerProfile] = useState<Customer | null>(null);
   const [favoriteTraders, setFavoriteTraders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [subscriptionTier, setSubscriptionTierState] = useState<SubscriptionTier>('basic');
@@ -45,10 +48,11 @@ export const [AppProvider, useApp] = createContextHook(() => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [storedRole, storedFavorites, storedProfile, storedTier, storedLeads, storedLeadsUsed] = await Promise.all([
+        const [storedRole, storedFavorites, storedProfile, storedCustomerProfile, storedTier, storedLeads, storedLeadsUsed] = await Promise.all([
           AsyncStorage.getItem('userRole'),
           AsyncStorage.getItem('favoriteTraders'),
           AsyncStorage.getItem('myTraderProfile'),
+          AsyncStorage.getItem('myCustomerProfile'),
           AsyncStorage.getItem('subscriptionTier'),
           AsyncStorage.getItem('unlockedLeads'),
           AsyncStorage.getItem('leadsUsedThisMonth'),
@@ -62,6 +66,9 @@ export const [AppProvider, useApp] = createContextHook(() => {
         }
         if (storedProfile) {
           setMyTraderProfile(JSON.parse(storedProfile));
+        }
+        if (storedCustomerProfile) {
+          setMyCustomerProfile(JSON.parse(storedCustomerProfile));
         }
         if (storedTier) {
           setSubscriptionTierState(storedTier as SubscriptionTier);
@@ -116,6 +123,11 @@ export const [AppProvider, useApp] = createContextHook(() => {
       }
       return [...prev, trader];
     });
+  };
+
+  const updateCustomerProfile = async (customer: Customer) => {
+    setMyCustomerProfile(customer);
+    await AsyncStorage.setItem('myCustomerProfile', JSON.stringify(customer));
   };
 
   const toggleFavorite = async (traderId: string) => {
@@ -279,6 +291,8 @@ export const [AppProvider, useApp] = createContextHook(() => {
     addJob,
     updateTraderProfile,
     myTraderProfile,
+    myCustomerProfile,
+    updateCustomerProfile,
     favoriteTraders,
     toggleFavorite,
     isLoading,
