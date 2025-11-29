@@ -7,8 +7,10 @@ import { Search, Filter, Star, MapPin, Heart, Crown, ArrowLeft } from 'lucide-re
 import { useFilteredTraders, useApp } from '@/contexts/AppContext';
 import { TradeCategory, Community, PriceRating } from '@/types';
 import Colors from '@/constants/colors';
+import { navigateToHome } from '@/lib/navigation';
 
 export default function BrowseScreen() {
+  const { favoriteTraders, toggleFavorite, userRole } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState<TradeCategory | 'All'>('All');
   const [community, setCommunity] = useState<Community>('All');
@@ -40,7 +42,6 @@ export default function BrowseScreen() {
   };
 
   const traders = useFilteredTraders(searchQuery, category, community, priceRating, verifiedOnly);
-  const { favoriteTraders, toggleFavorite } = useApp();
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -48,7 +49,7 @@ export default function BrowseScreen() {
         <View style={styles.headerLeft}>
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => router.push('/(customer-tabs)/home' as any)}
+            onPress={() => navigateToHome(userRole)}
             activeOpacity={0.7}
           >
             <ArrowLeft size={24} color={Colors.textPrimary} />

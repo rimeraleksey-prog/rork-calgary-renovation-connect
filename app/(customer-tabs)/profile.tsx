@@ -65,11 +65,17 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={() => console.log('Edit Profile - Coming soon')}
+          >
             <Text style={styles.buttonText}>Edit Profile</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonOutline}>
+          <TouchableOpacity 
+            style={styles.buttonOutline}
+            onPress={() => console.log('Settings - Coming soon')}
+          >
             <Text style={styles.buttonOutlineText}>Settings</Text>
           </TouchableOpacity>
 
