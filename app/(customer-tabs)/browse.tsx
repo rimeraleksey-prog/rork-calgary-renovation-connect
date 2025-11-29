@@ -42,9 +42,6 @@ export default function BrowseScreen() {
   const traders = useFilteredTraders(searchQuery, category, community, priceRating, verifiedOnly);
   const { favoriteTraders, toggleFavorite } = useApp();
 
-  console.log('Filter state:', { searchQuery, category, community, priceRating, verifiedOnly });
-  console.log('Filtered traders count:', traders.length);
-
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
@@ -317,20 +314,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
-  },
-  homeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.offWhite,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 28,

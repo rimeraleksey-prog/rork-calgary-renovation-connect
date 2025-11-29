@@ -12,9 +12,9 @@ export default function WelcomeScreen() {
   const handleRoleSelection = (role: 'customer' | 'trader') => {
     setUserRole(role);
     if (role === 'customer') {
-      router.replace('/(customer)/browse');
+      router.replace('/(customer-tabs)/home');
     } else {
-      router.replace('/(trader)/jobs');
+      router.replace('/(trader-tabs)/dashboard');
     }
   };
 
