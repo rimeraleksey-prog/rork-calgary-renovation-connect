@@ -48,12 +48,24 @@ export default function ProfileScreen() {
             <View style={styles.infoRow}>
               <MapPin size={20} color={Colors.deepBlue} />
               <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Service Areas</Text>
+                <Text style={styles.infoLabel}>Service Cities</Text>
                 <Text style={styles.infoValue}>
-                  {myTraderProfile?.serviceAreas.join(', ') || 'All Areas'}
+                  {myTraderProfile?.serviceCities?.join(', ') || 'Not set'}
                 </Text>
               </View>
             </View>
+
+            {myTraderProfile?.serviceRegions && (
+              <View style={styles.infoRow}>
+                <MapPin size={20} color={Colors.gray} />
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Regions</Text>
+                  <Text style={styles.infoValue}>
+                    {myTraderProfile.serviceRegions}
+                  </Text>
+                </View>
+              </View>
+            )}
 
             <View style={styles.infoRow}>
               <Shield size={20} color={Colors.deepBlue} />

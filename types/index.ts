@@ -39,6 +39,8 @@ export interface Trader {
   ownerName: string;
   category: TradeCategory;
   serviceAreas: Community[];
+  serviceCities: City[];
+  serviceRegions?: string;
   city?: City;
   experience: ExperienceLevel;
   certifications: string[];
@@ -104,7 +106,8 @@ export interface Job {
   budgetRange: BudgetRange;
   timeline: Timeline;
   community: Community;
-  city?: City;
+  city: City;
+  region?: string;
   address: string;
   postedDate: Date;
   status: 'open' | 'quoted' | 'in-progress' | 'completed';

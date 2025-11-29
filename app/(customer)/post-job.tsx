@@ -4,7 +4,7 @@ import { Stack, router } from 'expo-router';
 import { useState } from 'react';
 import { ArrowLeft, Camera } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
-import { ProjectType, BudgetRange, Timeline, Community, Job } from '@/types';
+import { ProjectType, BudgetRange, Timeline, City, Job } from '@/types';
 import Colors from '@/constants/colors';
 
 const PROJECT_TYPES: ProjectType[] = [
@@ -40,7 +40,18 @@ const TIMELINES: Timeline[] = [
   'Flexible',
 ];
 
-const COMMUNITIES: Community[] = ['NE', 'NW', 'SE', 'SW'];
+const CITIES: City[] = [
+  'Calgary',
+  'Edmonton',
+  'Red Deer',
+  'Lethbridge',
+  'Medicine Hat',
+  'Grande Prairie',
+  'Airdrie',
+  'Spruce Grove',
+  'Leduc',
+  'Fort McMurray',
+];
 
 export default function PostJobScreen() {
   const { addJob } = useApp();
@@ -48,11 +59,12 @@ export default function PostJobScreen() {
   const [description, setDescription] = useState('');
   const [budgetRange, setBudgetRange] = useState<BudgetRange | ''>('');
   const [timeline, setTimeline] = useState<Timeline | ''>('');
-  const [community, setCommunity] = useState<Community | ''>('');
+  const [city, setCity] = useState<City | ''>('');
+  const [region, setRegion] = useState('');
   const [address, setAddress] = useState('');
 
   const handleSubmit = () => {
-    if (!projectType || !description || !budgetRange || !timeline || !community || !address) {
+    if (!projectType || !description || !budgetRange || !timeline || !city || !address) {
       Alert.alert('Missing Information', 'Please fill in all required fields');
       return;
     }
@@ -66,7 +78,9 @@ export default function PostJobScreen() {
       photos: [],
       budgetRange: budgetRange as BudgetRange,
       timeline: timeline as Timeline,
-      community: community as Community,
+      community: 'All',
+      city: city as City,
+      region: region || undefined,
       address,
       postedDate: new Date(),
       status: 'open',
@@ -164,20 +178,31 @@ export default function PostJobScreen() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.label}>Community *</Text>
-            <View style={styles.communityGrid}>
-              {COMMUNITIES.map((comm) => (
+            <Text style={styles.label}>City *</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
+              {CITIES.map((cityOption) => (
                 <TouchableOpacity
-                  key={comm}
-                  style={[styles.communityItem, community === comm && styles.communityItemActive]}
-                  onPress={() => setCommunity(comm)}
+                  key={cityOption}
+                  style={[styles.chip, city === cityOption && styles.chipActive]}
+                  onPress={() => setCity(cityOption)}
                 >
-                  <Text style={[styles.communityItemText, community === comm && styles.communityItemTextActive]}>
-                    {comm}
+                  <Text style={[styles.chipText, city === cityOption && styles.chipTextActive]}>
+                    {cityOption}
                   </Text>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>Region / Neighborhood (Optional)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g., NW, Downtown, Riverbend"
+              value={region}
+              onChangeText={setRegion}
+              placeholderTextColor={Colors.grayLight}
+            />
           </View>
 
           <View style={styles.section}>
