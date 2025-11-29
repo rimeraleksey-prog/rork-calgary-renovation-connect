@@ -99,6 +99,42 @@ export default function ContractorDetailScreen() {
               </View>
             </View>
 
+            {trader.category === 'Handyman Services' && trader.handymanServices && trader.handymanServices.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Services Offered</Text>
+                <View style={styles.servicesGrid}>
+                  {trader.handymanServices.map((service) => (
+                    <View key={service} style={styles.serviceTag}>
+                      <Text style={styles.serviceTagText}>{service}</Text>
+                    </View>
+                  ))}
+                </View>
+                {trader.servicesDescription && (
+                  <View style={styles.descriptionBox}>
+                    <Text style={styles.servicesDescriptionText}>{trader.servicesDescription}</Text>
+                  </View>
+                )}
+              </View>
+            )}
+
+            {trader.category === 'Cleaning Services' && trader.cleaningServices && trader.cleaningServices.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Services Offered</Text>
+                <View style={styles.servicesGrid}>
+                  {trader.cleaningServices.map((service) => (
+                    <View key={service} style={styles.serviceTag}>
+                      <Text style={styles.serviceTagText}>{service}</Text>
+                    </View>
+                  ))}
+                </View>
+                {trader.servicesDescription && (
+                  <View style={styles.descriptionBox}>
+                    <Text style={styles.servicesDescriptionText}>{trader.servicesDescription}</Text>
+                  </View>
+                )}
+              </View>
+            )}
+
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Certifications</Text>
               {trader.certifications.map((cert, index) => (
@@ -360,5 +396,33 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 17,
     fontWeight: '700' as const,
+  },
+  servicesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 16,
+  },
+  serviceTag: {
+    backgroundColor: Colors.deepBlue,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  serviceTagText: {
+    fontSize: 13,
+    fontWeight: '600' as const,
+    color: Colors.white,
+  },
+  descriptionBox: {
+    backgroundColor: Colors.offWhite,
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  servicesDescriptionText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    lineHeight: 20,
   },
 });

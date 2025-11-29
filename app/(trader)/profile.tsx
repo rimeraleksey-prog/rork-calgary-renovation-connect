@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ArrowLeft, Save, Crown, Zap, Star, Settings, Plus, X } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { TradeCategory, ExperienceLevel, PriceRating, City, Trader } from '@/types';
+import { TradeCategory, ExperienceLevel, PriceRating, City, Trader, HandymanService, CleaningService } from '@/types';
 import Colors from '@/constants/colors';
 
 const TRADE_CATEGORIES: TradeCategory[] = [
@@ -38,6 +38,27 @@ const CITIES: City[] = [
   'Fort McMurray',
 ];
 
+const HANDYMAN_SERVICES: HandymanService[] = [
+  'Furniture Assembly',
+  'TV Mounting',
+  'Drywall Patching',
+  'Minor Plumbing Repairs',
+  'Minor Electrical Fixes',
+  'Door Repair',
+  'Lock Installation',
+  'Caulking',
+  'Shelf Installation',
+];
+
+const CLEANING_SERVICES: CleaningService[] = [
+  'Standard Cleaning',
+  'Deep Cleaning',
+  'Move-in/out Cleaning',
+  'Post-renovation Cleaning',
+  'Airbnb Turnover',
+  'Carpet Cleaning',
+];
+
 export default function ProfileScreen() {
   const { myTraderProfile, updateTraderProfile } = useApp();
   const { currentPlan } = useSubscription();
@@ -57,12 +78,31 @@ export default function ProfileScreen() {
   const [yearsInBusiness, setYearsInBusiness] = useState(myTraderProfile?.yearsInBusiness?.toString() || '');
   const [portfolioImages, setPortfolioImages] = useState<string[]>(myTraderProfile?.portfolioImages || []);
   const [uploadingImage] = useState(false);
+  const [handymanServices, setHandymanServices] = useState<HandymanService[]>(myTraderProfile?.handymanServices || []);
+  const [cleaningServices, setCleaningServices] = useState<CleaningService[]>(myTraderProfile?.cleaningServices || []);
+  const [servicesDescription, setServicesDescription] = useState(myTraderProfile?.servicesDescription || '');
 
   const toggleServiceCity = (city: City) => {
     setServiceCities((prev) => 
       prev.includes(city)
         ? prev.filter((c) => c !== city)
         : [...prev, city]
+    );
+  };
+
+  const toggleHandymanService = (service: HandymanService) => {
+    setHandymanServices((prev) => 
+      prev.includes(service)
+        ? prev.filter((s) => s !== service)
+        : [...prev, service]
+    );
+  };
+
+  const toggleCleaningService = (service: CleaningService) => {
+    setCleaningServices((prev) => 
+      prev.includes(service)
+        ? prev.filter((s) => s !== service)
+        : [...prev, service]
     );
   };
 
@@ -115,6 +155,16 @@ export default function ProfileScreen() {
       return;
     }
 
+    if (category === 'Handyman Services' && handymanServices.length === 0) {
+      Alert.alert('Missing Information', 'Please select at least one handyman service');
+      return;
+    }
+
+    if (category === 'Cleaning Services' && cleaningServices.length === 0) {
+      Alert.alert('Missing Information', 'Please select at least one cleaning service');
+      return;
+    }
+
     const profile: Trader = {
       id: myTraderProfile?.id || `trader-${Date.now()}`,
       businessName,
@@ -135,11 +185,16 @@ export default function ProfileScreen() {
       yearsInBusiness: parseInt(yearsInBusiness),
       phone,
       email,
+      handymanServices: category === 'Handyman Services' ? handymanServices : undefined,
+      cleaningServices: category === 'Cleaning Services' ? cleaningServices : undefined,
+      servicesDescription: (category === 'Handyman Services' || category === 'Cleaning Services') ? servicesDescription : undefined,
     };
 
     updateTraderProfile(profile);
     Alert.alert('Success', 'Your profile has been updated!');
   };
+
+  const showSubServices = category === 'Handyman Services' || category === 'Cleaning Services';
 
   return (
     <>
@@ -227,6 +282,63 @@ export default function ProfileScreen() {
               ))}
             </ScrollView>
           </View>
+
+          {category === 'Handyman Services' && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Handyman Services * (Select all that apply)</Text>
+              <Text style={styles.hint}>Choose at least one service you offer</Text>
+              <View style={styles.serviceGrid}>
+                {HANDYMAN_SERVICES.map((service) => (
+                  <TouchableOpacity
+                    key={service}
+                    style={[styles.serviceItem, handymanServices.includes(service) && styles.serviceItemActive]}
+                    onPress={() => toggleHandymanService(service)}
+                  >
+                    <Text style={[styles.serviceItemText, handymanServices.includes(service) && styles.serviceItemTextActive]}>
+                      {service}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {category === 'Cleaning Services' && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Cleaning Services * (Select all that apply)</Text>
+              <Text style={styles.hint}>Choose at least one service you offer</Text>
+              <View style={styles.serviceGrid}>
+                {CLEANING_SERVICES.map((service) => (
+                  <TouchableOpacity
+                    key={service}
+                    style={[styles.serviceItem, cleaningServices.includes(service) && styles.serviceItemActive]}
+                    onPress={() => toggleCleaningService(service)}
+                  >
+                    <Text style={[styles.serviceItemText, cleaningServices.includes(service) && styles.serviceItemTextActive]}>
+                      {service}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {showSubServices && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Services Description (Optional)</Text>
+              <Text style={styles.hint}>Describe your services in detail, pricing, and availability</Text>
+              <TextInput
+                style={styles.textArea}
+                placeholder="Tell customers about your services, pricing structure, availability, etc..."
+                value={servicesDescription}
+                onChangeText={setServicesDescription}
+                multiline
+                numberOfLines={5}
+                textAlignVertical="top"
+                placeholderTextColor={Colors.grayLight}
+              />
+            </View>
+          )}
 
           <View style={styles.section}>
             <Text style={styles.label}>Experience Level *</Text>
@@ -496,6 +608,11 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     marginBottom: 12,
   },
+  hint: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginBottom: 12,
+  },
   input: {
     backgroundColor: Colors.offWhite,
     borderRadius: 12,
@@ -533,6 +650,31 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   chipTextActive: {
+    color: Colors.white,
+  },
+  serviceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  serviceItem: {
+    backgroundColor: Colors.offWhite,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  serviceItemActive: {
+    backgroundColor: Colors.deepBlue,
+    borderColor: Colors.deepBlue,
+  },
+  serviceItemText: {
+    fontSize: 13,
+    fontWeight: '500' as const,
+    color: Colors.textPrimary,
+  },
+  serviceItemTextActive: {
     color: Colors.white,
   },
   row: {

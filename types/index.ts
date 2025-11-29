@@ -35,6 +35,25 @@ export type ExperienceLevel = 'Entry' | 'Intermediate' | 'Expert';
 
 export type PriceRating = '$' | '$$' | '$$$';
 
+export type HandymanService = 
+  | 'Furniture Assembly'
+  | 'TV Mounting'
+  | 'Drywall Patching'
+  | 'Minor Plumbing Repairs'
+  | 'Minor Electrical Fixes'
+  | 'Door Repair'
+  | 'Lock Installation'
+  | 'Caulking'
+  | 'Shelf Installation';
+
+export type CleaningService = 
+  | 'Standard Cleaning'
+  | 'Deep Cleaning'
+  | 'Move-in/out Cleaning'
+  | 'Post-renovation Cleaning'
+  | 'Airbnb Turnover'
+  | 'Carpet Cleaning';
+
 export interface Trader {
   id: string;
   businessName: string;
@@ -66,6 +85,9 @@ export interface Trader {
   referral_code?: string;
   referred_by?: string;
   referral_credits?: number;
+  handymanServices?: HandymanService[];
+  cleaningServices?: CleaningService[];
+  servicesDescription?: string;
 }
 
 export type ProjectType = 
