@@ -1,12 +1,14 @@
 import { router } from 'expo-router';
 import { Alert, Platform } from 'react-native';
+import { navigateToHome } from '@/lib/navigation';
+import { UserRole } from '@/types';
 
 const __DEV__ = process.env.NODE_ENV === 'development';
 
 export type NavigationAction =
   | { type: 'navigate'; route: string }
   | { type: 'replace'; route: string }
-  | { type: 'back' }
+  | { type: 'back'; userRole?: UserRole }
   | { type: 'custom'; handler: () => void };
 
 interface ButtonPressConfig {
@@ -117,7 +119,14 @@ export function handleButtonPress(config: ButtonPressConfig): () => void {
           if (router.canGoBack()) {
             router.back();
           } else {
-            router.replace('/');
+            const userRole = action.userRole;
+            if (userRole) {
+              console.log(`[Navigation] Cannot go back, navigating to home for role: ${userRole}`);
+              navigateToHome(userRole);
+            } else {
+              console.log(`[Navigation] Cannot go back and no userRole provided, navigating to /`);
+              router.replace('/');
+            }
           }
           break;
 
@@ -155,8 +164,8 @@ export function createReplaceAction(route: string): NavigationAction {
   return { type: 'replace', route };
 }
 
-export function createBackAction(): NavigationAction {
-  return { type: 'back' };
+export function createBackAction(userRole?: UserRole): NavigationAction {
+  return { type: 'back', userRole };
 }
 
 export function createCustomAction(handler: () => void): NavigationAction {

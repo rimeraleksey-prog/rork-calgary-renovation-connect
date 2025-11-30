@@ -61,7 +61,7 @@ const CLEANING_SERVICES: CleaningService[] = [
 ];
 
 export default function ProfileScreen() {
-  const { myTraderProfile, updateTraderProfile } = useApp();
+  const { myTraderProfile, updateTraderProfile, userRole } = useApp();
   const { currentPlan } = useSubscription();
 
   const tier = myTraderProfile?.subscriptionTier || 'basic';
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
         <View style={styles.header}>
           <TouchableOpacity 
             onPress={handleButtonPress({
-              action: createBackAction(),
+              action: createBackAction(userRole),
               label: 'Back',
             })} 
             style={styles.backButton}

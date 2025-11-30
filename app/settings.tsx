@@ -8,7 +8,7 @@ import Colors from '@/constants/colors';
 import { handleButtonPress, createBackAction, createCustomAction } from '@/lib/navigation-handler';
 
 export default function SettingsScreen() {
-  const { setUserRole } = useApp();
+  const { setUserRole, userRole } = useApp();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [smsNotifications, setSmsNotifications] = useState(false);
@@ -46,7 +46,7 @@ export default function SettingsScreen() {
         <View style={styles.header}>
           <TouchableOpacity 
             onPress={handleButtonPress({
-              action: createBackAction(),
+              action: createBackAction(userRole),
               label: 'Back',
             })} 
             style={styles.backButton}

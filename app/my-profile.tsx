@@ -78,7 +78,7 @@ export default function MyProfileScreen() {
         <View style={styles.header}>
           <TouchableOpacity 
             onPress={handleButtonPress({
-              action: createBackAction(),
+              action: createBackAction(userRole),
               label: 'Back',
             })} 
             style={styles.backButton}
