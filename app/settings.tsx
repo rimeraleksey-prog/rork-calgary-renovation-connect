@@ -8,7 +8,7 @@ import Colors from '@/constants/colors';
 import { handleButtonPress, createBackAction, createCustomAction } from '@/lib/navigation-handler';
 
 export default function SettingsScreen() {
-  const { setUserRole, userRole } = useApp();
+  const { logout, userRole } = useApp();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [smsNotifications, setSmsNotifications] = useState(false);
@@ -27,7 +27,7 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             console.log('Logging out...');
-            await setUserRole(null);
+            await logout();
             router.replace('/');
           },
         },

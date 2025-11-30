@@ -19,6 +19,8 @@ interface ButtonPressConfig {
 
 const VALID_ROUTES = [
   '/',
+  '/login',
+  '/signup',
   '/(customer-tabs)/home',
   '/(customer-tabs)/browse',
   '/(customer-tabs)/my-jobs',

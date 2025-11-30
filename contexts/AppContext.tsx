@@ -8,6 +8,10 @@ import { SubscriptionTier } from '@/constants/subscription';
 export interface AppState {
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
+  isAuthenticated: boolean;
+  login: (email: string, password: string, role: 'customer' | 'trader') => Promise<void>;
+  logout: () => Promise<void>;
+  signup: (email: string, password: string, name: string, role: 'customer' | 'trader') => Promise<void>;
   traders: Trader[];
   jobs: Job[];
   addJob: (job: Job) => void;
@@ -35,6 +39,7 @@ export interface AppState {
 
 export const [AppProvider, useApp] = createContextHook(() => {
   const [userRole, setUserRoleState] = useState<UserRole>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [traders, setTraders] = useState<Trader[]>(mockTraders);
   const [jobs, setJobs] = useState<Job[]>(mockJobs);
   const [myTraderProfile, setMyTraderProfile] = useState<Trader | null>(null);
@@ -48,8 +53,9 @@ export const [AppProvider, useApp] = createContextHook(() => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [storedRole, storedFavorites, storedProfile, storedCustomerProfile, storedTier, storedLeads, storedLeadsUsed] = await Promise.all([
+        const [storedRole, storedAuth, storedFavorites, storedProfile, storedCustomerProfile, storedTier, storedLeads, storedLeadsUsed] = await Promise.all([
           AsyncStorage.getItem('userRole'),
+          AsyncStorage.getItem('isAuthenticated'),
           AsyncStorage.getItem('favoriteTraders'),
           AsyncStorage.getItem('myTraderProfile'),
           AsyncStorage.getItem('myCustomerProfile'),
@@ -60,6 +66,9 @@ export const [AppProvider, useApp] = createContextHook(() => {
 
         if (storedRole) {
           setUserRoleState(storedRole as UserRole);
+        }
+        if (storedAuth) {
+          setIsAuthenticated(storedAuth === 'true');
         }
         if (storedFavorites) {
           setFavoriteTraders(JSON.parse(storedFavorites));
@@ -96,6 +105,107 @@ export const [AppProvider, useApp] = createContextHook(() => {
     } else {
       await AsyncStorage.removeItem('userRole');
     }
+  };
+
+  const login = async (email: string, password: string, role: 'customer' | 'trader') => {
+    console.log('Login attempt:', { email, role });
+    
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setIsAuthenticated(true);
+    setUserRoleState(role);
+    await AsyncStorage.setItem('isAuthenticated', 'true');
+    await AsyncStorage.setItem('userRole', role);
+    
+    if (role === 'trader') {
+      const newTraderProfile: Trader = {
+        id: 'trader-' + Date.now(),
+        businessName: 'My Business',
+        ownerName: email.split('@')[0],
+        category: 'General Contractor',
+        serviceAreas: ['All'],
+        serviceCities: ['Calgary'],
+        experience: 'Intermediate',
+        certifications: [],
+        insured: true,
+        portfolioImages: [],
+        description: '',
+        priceRating: '$',
+        rating: 5,
+        reviewCount: 0,
+        verified: false,
+        yearsInBusiness: 1,
+        phone: '',
+        email: email,
+        subscriptionTier: 'basic',
+      };
+      await updateTraderProfile(newTraderProfile);
+    } else {
+      const newCustomerProfile: Customer = {
+        id: 'customer-' + Date.now(),
+        name: email.split('@')[0],
+        email: email,
+        phone: '',
+      };
+      await updateCustomerProfile(newCustomerProfile);
+    }
+    
+    console.log('Login successful');
+  };
+
+  const signup = async (email: string, password: string, name: string, role: 'customer' | 'trader') => {
+    console.log('Signup attempt:', { email, name, role });
+    
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setIsAuthenticated(true);
+    setUserRoleState(role);
+    await AsyncStorage.setItem('isAuthenticated', 'true');
+    await AsyncStorage.setItem('userRole', role);
+    
+    if (role === 'trader') {
+      const newTraderProfile: Trader = {
+        id: 'trader-' + Date.now(),
+        businessName: name,
+        ownerName: name,
+        category: 'General Contractor',
+        serviceAreas: ['All'],
+        serviceCities: ['Calgary'],
+        experience: 'Intermediate',
+        certifications: [],
+        insured: true,
+        portfolioImages: [],
+        description: '',
+        priceRating: '$',
+        rating: 5,
+        reviewCount: 0,
+        verified: false,
+        yearsInBusiness: 1,
+        phone: '',
+        email: email,
+        subscriptionTier: 'basic',
+      };
+      await updateTraderProfile(newTraderProfile);
+    } else {
+      const newCustomerProfile: Customer = {
+        id: 'customer-' + Date.now(),
+        name: name,
+        email: email,
+        phone: '',
+      };
+      await updateCustomerProfile(newCustomerProfile);
+    }
+    
+    console.log('Signup successful');
+  };
+
+  const logout = async () => {
+    console.log('Logging out');
+    setIsAuthenticated(false);
+    setUserRoleState(null);
+    setMyTraderProfile(null);
+    setMyCustomerProfile(null);
+    await AsyncStorage.multiRemove(['isAuthenticated', 'userRole', 'myTraderProfile', 'myCustomerProfile']);
   };
 
   const addJob = (job: Job) => {
@@ -286,6 +396,10 @@ export const [AppProvider, useApp] = createContextHook(() => {
   return {
     userRole,
     setUserRole,
+    isAuthenticated,
+    login,
+    logout,
+    signup,
     traders,
     jobs,
     addJob,

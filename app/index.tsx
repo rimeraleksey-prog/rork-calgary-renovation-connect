@@ -1,13 +1,24 @@
 import { StyleSheet, Text, View, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
-import { User, Briefcase, ArrowRight, CheckCircle, Star, Shield } from 'lucide-react-native';
+import { User, Briefcase, ArrowRight, CheckCircle, Star, Shield, LogIn } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { router } from 'expo-router';
 import Colors from '@/constants/colors';
+import { useEffect } from 'react';
 
 export default function WelcomeScreen() {
-  const { setUserRole } = useApp();
+  const { setUserRole, isAuthenticated, userRole } = useApp();
+
+  useEffect(() => {
+    if (isAuthenticated && userRole) {
+      if (userRole === 'customer') {
+        router.replace('/(customer-tabs)/home');
+      } else {
+        router.replace('/(trader-tabs)/dashboard');
+      }
+    }
+  }, [isAuthenticated, userRole]);
 
   const handleRoleSelection = (role: 'customer' | 'trader') => {
     setUserRole(role);
@@ -77,8 +88,19 @@ export default function WelcomeScreen() {
             </View>
           </View>
 
+          <View style={styles.authSection}>
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => router.push('/login')}
+              activeOpacity={0.8}
+            >
+              <LogIn size={20} color={Colors.white} strokeWidth={2.5} />
+              <Text style={styles.loginButtonText}>Log In</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.roleSelection}>
-            <Text style={styles.sectionTitle}>Get Started</Text>
+            <Text style={styles.sectionTitle}>New User? Get Started</Text>
             <View style={styles.roleCards}>
               <TouchableOpacity
                 style={styles.roleCard}
@@ -404,5 +426,34 @@ const styles = StyleSheet.create({
   footerCopyright: {
     fontSize: 12,
     color: Colors.textSecondary,
+  },
+  authSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  loginButton: {
+    height: 56,
+    backgroundColor: '#1E3A5F',
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#1E3A5F',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  loginButtonText: {
+    fontSize: 18,
+    fontWeight: '700' as const,
+    color: Colors.white,
   },
 });
