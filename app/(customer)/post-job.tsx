@@ -4,7 +4,7 @@ import { Stack, router } from 'expo-router';
 import { useState } from 'react';
 import { ArrowLeft, Camera } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
-import { ProjectType, BudgetRange, Timeline, City, Job } from '@/types';
+import { ProjectType, BudgetRange, Timeline, City, Job, HandymanService, CleaningService } from '@/types';
 import Colors from '@/constants/colors';
 
 const PROJECT_TYPES: ProjectType[] = [
@@ -55,6 +55,27 @@ const CITIES: City[] = [
   'Fort McMurray',
 ];
 
+const HANDYMAN_SERVICES: HandymanService[] = [
+  'Furniture Assembly',
+  'TV Mounting',
+  'Drywall Patching',
+  'Minor Plumbing Repairs',
+  'Minor Electrical Fixes',
+  'Door Repair',
+  'Lock Installation',
+  'Caulking',
+  'Shelf Installation',
+];
+
+const CLEANING_SERVICES: CleaningService[] = [
+  'Standard Cleaning',
+  'Deep Cleaning',
+  'Move-in/out Cleaning',
+  'Post-renovation Cleaning',
+  'Airbnb Turnover',
+  'Carpet Cleaning',
+];
+
 export default function PostJobScreen() {
   const { addJob } = useApp();
   const [projectType, setProjectType] = useState<ProjectType | ''>('');
@@ -64,11 +85,72 @@ export default function PostJobScreen() {
   const [city, setCity] = useState<City | ''>('');
   const [region, setRegion] = useState('');
   const [address, setAddress] = useState('');
+  
+  const [selectedHandymanServices, setSelectedHandymanServices] = useState<HandymanService[]>([]);
+  const [handymanUrgency, setHandymanUrgency] = useState<'Low' | 'Medium' | 'Urgent' | ''>('');
+  
+  const [selectedCleaningServices, setSelectedCleaningServices] = useState<CleaningService[]>([]);
+  const [numberOfRooms, setNumberOfRooms] = useState('');
+  const [squareFootage, setSquareFootage] = useState('');
+  
+  const isHandymanJob = projectType === 'Handyman Services';
+  const isCleaningJob = projectType === 'Cleaning Services';
+
+  const toggleHandymanService = (service: HandymanService) => {
+    setSelectedHandymanServices(prev => 
+      prev.includes(service) 
+        ? prev.filter(s => s !== service)
+        : [...prev, service]
+    );
+  };
+  
+  const toggleCleaningService = (service: CleaningService) => {
+    setSelectedCleaningServices(prev => 
+      prev.includes(service) 
+        ? prev.filter(s => s !== service)
+        : [...prev, service]
+    );
+  };
 
   const handleSubmit = () => {
     if (!projectType || !description || !budgetRange || !timeline || !city || !address) {
       Alert.alert('Missing Information', 'Please fill in all required fields');
       return;
+    }
+    
+    if (isHandymanJob) {
+      if (selectedHandymanServices.length === 0) {
+        Alert.alert('Missing Information', 'Please select at least one handyman service');
+        return;
+      }
+      if (!handymanUrgency) {
+        Alert.alert('Missing Information', 'Please select level of urgency');
+        return;
+      }
+    }
+    
+    if (isCleaningJob) {
+      if (selectedCleaningServices.length === 0) {
+        Alert.alert('Missing Information', 'Please select at least one cleaning service');
+        return;
+      }
+      if (!numberOfRooms && !squareFootage) {
+        Alert.alert('Missing Information', 'Please enter number of rooms or square footage');
+        return;
+      }
+    }
+
+    let jobDescription = description;
+    
+    if (isHandymanJob) {
+      jobDescription += `\n\nServices: ${selectedHandymanServices.join(', ')}`;
+      jobDescription += `\nUrgency: ${handymanUrgency}`;
+    }
+    
+    if (isCleaningJob) {
+      jobDescription += `\n\nServices: ${selectedCleaningServices.join(', ')}`;
+      if (numberOfRooms) jobDescription += `\nNumber of rooms: ${numberOfRooms}`;
+      if (squareFootage) jobDescription += `\nSquare footage: ${squareFootage} sq ft`;
     }
 
     const newJob: Job = {
@@ -76,7 +158,7 @@ export default function PostJobScreen() {
       customerId: 'current-user',
       customerName: 'You',
       projectType: projectType as ProjectType,
-      description,
+      description: jobDescription,
       photos: [],
       budgetRange: budgetRange as BudgetRange,
       timeline: timeline as Timeline,
@@ -86,6 +168,12 @@ export default function PostJobScreen() {
       address,
       postedDate: new Date(),
       status: 'open',
+      ...(isHandymanJob && {
+        tradeCategory: 'Handyman Services',
+      }),
+      ...(isCleaningJob && {
+        tradeCategory: 'Cleaning Services',
+      }),
     };
 
     addJob(newJob);
@@ -130,6 +218,114 @@ export default function PostJobScreen() {
               ))}
             </ScrollView>
           </View>
+
+          {isHandymanJob && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Select Services *</Text>
+              <View style={styles.serviceGrid}>
+                {HANDYMAN_SERVICES.map((service) => (
+                  <TouchableOpacity
+                    key={service}
+                    style={[
+                      styles.serviceChip,
+                      selectedHandymanServices.includes(service) && styles.serviceChipActive,
+                    ]}
+                    onPress={() => toggleHandymanService(service)}
+                  >
+                    <Text
+                      style={[
+                        styles.serviceChipText,
+                        selectedHandymanServices.includes(service) && styles.serviceChipTextActive,
+                      ]}
+                    >
+                      {service}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {isHandymanJob && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Level of Urgency *</Text>
+              <View style={styles.grid}>
+                {(['Low', 'Medium', 'Urgent'] as const).map((urgency) => (
+                  <TouchableOpacity
+                    key={urgency}
+                    style={[styles.gridItem, handymanUrgency === urgency && styles.gridItemActive]}
+                    onPress={() => setHandymanUrgency(urgency)}
+                  >
+                    <Text
+                      style={[
+                        styles.gridItemText,
+                        handymanUrgency === urgency && styles.gridItemTextActive,
+                      ]}
+                    >
+                      {urgency}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {isCleaningJob && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Select Cleaning Services *</Text>
+              <View style={styles.serviceGrid}>
+                {CLEANING_SERVICES.map((service) => (
+                  <TouchableOpacity
+                    key={service}
+                    style={[
+                      styles.serviceChip,
+                      selectedCleaningServices.includes(service) && styles.serviceChipActive,
+                    ]}
+                    onPress={() => toggleCleaningService(service)}
+                  >
+                    <Text
+                      style={[
+                        styles.serviceChipText,
+                        selectedCleaningServices.includes(service) && styles.serviceChipTextActive,
+                      ]}
+                    >
+                      {service}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {isCleaningJob && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Property Details *</Text>
+              <View style={styles.inputRow}>
+                <View style={styles.inputHalf}>
+                  <Text style={styles.inputLabel}>Number of Rooms</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="e.g., 3"
+                    value={numberOfRooms}
+                    onChangeText={setNumberOfRooms}
+                    keyboardType="numeric"
+                    placeholderTextColor={Colors.grayLight}
+                  />
+                </View>
+                <View style={styles.inputHalf}>
+                  <Text style={styles.inputLabel}>Square Footage</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="e.g., 1200"
+                    value={squareFootage}
+                    onChangeText={setSquareFootage}
+                    keyboardType="numeric"
+                    placeholderTextColor={Colors.grayLight}
+                  />
+                </View>
+              </View>
+            </View>
+          )}
 
           <View style={styles.section}>
             <Text style={styles.label}>Description *</Text>
@@ -409,5 +605,43 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 17,
     fontWeight: '700' as const,
+  },
+  serviceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  serviceChip: {
+    backgroundColor: Colors.offWhite,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+  },
+  serviceChipActive: {
+    backgroundColor: Colors.deepBlue,
+    borderColor: Colors.deepBlue,
+  },
+  serviceChipText: {
+    fontSize: 13,
+    fontWeight: '500' as const,
+    color: Colors.textPrimary,
+  },
+  serviceChipTextActive: {
+    color: Colors.white,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  inputHalf: {
+    flex: 1,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '500' as const,
+    color: Colors.textSecondary,
+    marginBottom: 8,
   },
 });
