@@ -20,8 +20,10 @@ function RootLayoutNav() {
       <Stack.Screen name="(trader-tabs)" />
       <Stack.Screen name="(customer)/contractor/[id]" />
       <Stack.Screen name="(customer)/post-job" />
+      <Stack.Screen name="(trader)/profile" />
       <Stack.Screen name="(trader)/subscription-plans" />
       <Stack.Screen name="(trader)/subscription-dashboard" />
+      <Stack.Screen name="settings" />
     </Stack>
   );
 }
