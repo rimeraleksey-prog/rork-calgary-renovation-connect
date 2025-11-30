@@ -151,7 +151,11 @@ export default function SettingsScreen() {
               style={styles.settingRow}
               onPress={handleButtonPress({
                 action: createCustomAction(() => {
-                  console.log('Change password clicked');
+                  Alert.alert(
+                    'Change Password',
+                    'Password change functionality will be available soon.',
+                    [{ text: 'OK' }]
+                  );
                 }),
                 label: 'Change Password',
               })}
