@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Platform, ScrollView } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Plus, Star, TrendingUp, Clock, Shield, Award } from 'lucide-react-native';
+import { Plus, Star, TrendingUp, Clock, Shield, Award, Hammer, Sparkles, Wrench, PaintBucket, Zap } from 'lucide-react-native';
 import { useFilteredTraders, useApp } from '@/contexts/AppContext';
 import Colors from '@/constants/colors';
 
@@ -32,6 +32,14 @@ export default function CustomerHomeScreen() {
     { icon: Shield, text: 'All pros are verified & insured' },
     { icon: Award, text: 'Read real customer reviews' },
     { icon: TrendingUp, text: 'Compare multiple quotes' },
+  ];
+
+  const popularServices = [
+    { icon: Hammer, title: 'Handyman', subtitle: 'Quick fixes & repairs', color: '#4CAF50' },
+    { icon: Sparkles, title: 'Cleaning', subtitle: 'Professional cleaning', color: '#9C27B0' },
+    { icon: Wrench, title: 'Plumbing', subtitle: 'Pipes & fixtures', color: '#2196F3' },
+    { icon: PaintBucket, title: 'Painting', subtitle: 'Interior & exterior', color: '#FF9800' },
+    { icon: Zap, title: 'Electrical', subtitle: 'Wiring & fixtures', color: '#FFC107' },
   ];
 
   return (
@@ -64,6 +72,29 @@ export default function CustomerHomeScreen() {
               </TouchableOpacity>
             );
           })}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Popular Services</Text>
+          <View style={styles.servicesGrid}>
+            {popularServices.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.serviceCard}
+                  onPress={() => router.push('/(customer)/post-job' as any)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.serviceIcon, { backgroundColor: service.color + '15' }]}>
+                    <Icon size={28} color={service.color} strokeWidth={2.5} />
+                  </View>
+                  <Text style={styles.serviceTitle}>{service.title}</Text>
+                  <Text style={styles.serviceSubtitle}>{service.subtitle}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
         {myActiveJobs.length > 0 && (
@@ -406,5 +437,51 @@ const styles = StyleSheet.create({
   traderRatingText: {
     fontSize: 12,
     color: Colors.textSecondary,
+  },
+  servicesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  serviceCard: {
+    width: '31%',
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+      web: {
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+      } as any,
+    }),
+  },
+  serviceIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  serviceTitle: {
+    fontSize: 14,
+    fontWeight: '700' as const,
+    color: Colors.textPrimary,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  serviceSubtitle: {
+    fontSize: 11,
+    color: Colors.textSecondary,
+    textAlign: 'center',
   },
 });
