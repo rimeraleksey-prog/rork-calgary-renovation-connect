@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, router } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useState } from 'react';
 import { ArrowLeft, Save, Crown, Zap, Star, Settings, Plus, X } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { TradeCategory, ExperienceLevel, PriceRating, City, Trader, HandymanService, CleaningService } from '@/types';
 import Colors from '@/constants/colors';
+import { handleButtonPress, createBackAction, createNavigateAction, createCustomAction } from '@/lib/navigation-handler';
 
 const TRADE_CATEGORIES: TradeCategory[] = [
   'General Contractor',
@@ -205,11 +206,23 @@ export default function ProfileScreen() {
       />
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity 
+            onPress={handleButtonPress({
+              action: createBackAction(),
+              label: 'Back',
+            })} 
+            style={styles.backButton}
+          >
             <ArrowLeft size={24} color={Colors.textPrimary} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>My Profile</Text>
-          <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
+          <TouchableOpacity 
+            onPress={handleButtonPress({
+              action: createCustomAction(handleSave),
+              label: 'Save',
+            })} 
+            style={styles.saveButton}
+          >
             <Save size={20} color={Colors.deepBlue} />
           </TouchableOpacity>
         </View>
@@ -237,7 +250,10 @@ export default function ProfileScreen() {
           </View>
           <TouchableOpacity 
             style={styles.subscriptionBannerButton}
-            onPress={() => router.push('/(trader)/subscription-dashboard' as any)}
+            onPress={handleButtonPress({
+              action: createNavigateAction('/(trader)/subscription-dashboard'),
+              label: 'Subscription Dashboard',
+            })}
           >
             <Settings size={20} color={Colors.deepBlue} />
           </TouchableOpacity>
@@ -458,7 +474,10 @@ export default function ProfileScreen() {
               <Text style={styles.label}>Portfolio Images</Text>
               <TouchableOpacity 
                 style={styles.addPortfolioButton}
-                onPress={handleAddPortfolioImage}
+                onPress={handleButtonPress({
+                  action: createCustomAction(handleAddPortfolioImage),
+                  label: 'Add Portfolio Image',
+                })}
                 disabled={uploadingImage}
               >
                 <Plus size={16} color={Colors.white} />
@@ -493,7 +512,13 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.submitButton} onPress={handleSave}>
+          <TouchableOpacity 
+            style={styles.submitButton} 
+            onPress={handleButtonPress({
+              action: createCustomAction(handleSave),
+              label: 'Save Profile',
+            })}
+          >
             <Text style={styles.submitButtonText}>Save Profile</Text>
           </TouchableOpacity>
 

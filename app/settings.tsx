@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ArrowLeft, Bell, Globe, Shield, LogOut } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import Colors from '@/constants/colors';
+import { handleButtonPress, createBackAction, createCustomAction } from '@/lib/navigation-handler';
 
 export default function SettingsScreen() {
   const { setUserRole } = useApp();
@@ -43,7 +44,13 @@ export default function SettingsScreen() {
       />
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity 
+            onPress={handleButtonPress({
+              action: createBackAction(),
+              label: 'Back',
+            })} 
+            style={styles.backButton}
+          >
             <ArrowLeft size={24} color={Colors.textPrimary} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Settings</Text>
@@ -103,14 +110,24 @@ export default function SettingsScreen() {
               <Text style={styles.sectionTitle}>Preferences</Text>
             </View>
 
-            <TouchableOpacity style={styles.settingRow}>
+            <TouchableOpacity 
+              style={styles.settingRow}
+              onPress={handleButtonPress({
+                label: 'Language Settings',
+              })}
+            >
               <View style={styles.settingInfo}>
                 <Text style={styles.settingLabel}>Language</Text>
                 <Text style={styles.settingDescription}>English (Canada)</Text>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.settingRow}>
+            <TouchableOpacity 
+              style={styles.settingRow}
+              onPress={handleButtonPress({
+                label: 'Region Settings',
+              })}
+            >
               <View style={styles.settingInfo}>
                 <Text style={styles.settingLabel}>Region</Text>
                 <Text style={styles.settingDescription}>Alberta, Canada</Text>
@@ -124,14 +141,24 @@ export default function SettingsScreen() {
               <Text style={styles.sectionTitle}>Security</Text>
             </View>
 
-            <TouchableOpacity style={styles.settingRow}>
+            <TouchableOpacity 
+              style={styles.settingRow}
+              onPress={handleButtonPress({
+                label: 'Change Password',
+              })}
+            >
               <View style={styles.settingInfo}>
                 <Text style={styles.settingLabel}>Change Password</Text>
                 <Text style={styles.settingDescription}>Update your password</Text>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.settingRow}>
+            <TouchableOpacity 
+              style={styles.settingRow}
+              onPress={handleButtonPress({
+                label: 'Privacy Settings',
+              })}
+            >
               <View style={styles.settingInfo}>
                 <Text style={styles.settingLabel}>Privacy Settings</Text>
                 <Text style={styles.settingDescription}>Manage your privacy preferences</Text>
@@ -140,7 +167,13 @@ export default function SettingsScreen() {
           </View>
 
           <View style={styles.section}>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <TouchableOpacity 
+              style={styles.logoutButton} 
+              onPress={handleButtonPress({
+                action: createCustomAction(handleLogout),
+                label: 'Log Out',
+              })}
+            >
               <LogOut size={20} color={Colors.orange} />
               <Text style={styles.logoutButtonText}>Log Out</Text>
             </TouchableOpacity>

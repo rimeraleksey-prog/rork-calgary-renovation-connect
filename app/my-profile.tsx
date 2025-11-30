@@ -6,6 +6,7 @@ import { ArrowLeft, Save } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { Customer, City } from '@/types';
 import Colors from '@/constants/colors';
+import { handleButtonPress, createBackAction, createCustomAction } from '@/lib/navigation-handler';
 
 const CITIES: City[] = [
   'Calgary',
@@ -75,11 +76,23 @@ export default function MyProfileScreen() {
       />
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity 
+            onPress={handleButtonPress({
+              action: createBackAction(),
+              label: 'Back',
+            })} 
+            style={styles.backButton}
+          >
             <ArrowLeft size={24} color={Colors.textPrimary} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>My Profile</Text>
-          <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
+          <TouchableOpacity 
+            onPress={handleButtonPress({
+              action: createCustomAction(handleSave),
+              label: 'Save',
+            })} 
+            style={styles.saveButton}
+          >
             <Save size={20} color={Colors.deepBlue} />
           </TouchableOpacity>
         </View>
@@ -160,7 +173,13 @@ export default function MyProfileScreen() {
             />
           </View>
 
-          <TouchableOpacity style={styles.submitButton} onPress={handleSave}>
+          <TouchableOpacity 
+            style={styles.submitButton} 
+            onPress={handleButtonPress({
+              action: createCustomAction(handleSave),
+              label: 'Save Profile',
+            })}
+          >
             <Text style={styles.submitButtonText}>Save Profile</Text>
           </TouchableOpacity>
 

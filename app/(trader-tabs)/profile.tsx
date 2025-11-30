@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { Briefcase, Star, MapPin, Shield } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import Colors from '@/constants/colors';
+import { handleButtonPress, createNavigateAction, createCustomAction } from '@/lib/navigation-handler';
 
 export default function ProfileScreen() {
   const { myTraderProfile, setUserRole } = useApp();
@@ -84,19 +85,31 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <TouchableOpacity 
             style={styles.button}
-            onPress={() => router.push('/(trader)/profile')}
+            onPress={handleButtonPress({
+              action: createNavigateAction('/(trader)/profile'),
+              label: 'My Profile',
+            })}
           >
             <Text style={styles.buttonText}>My Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.buttonOutline}
-            onPress={() => router.push('/settings')}
+            onPress={handleButtonPress({
+              action: createNavigateAction('/settings'),
+              label: 'Settings',
+            })}
           >
             <Text style={styles.buttonOutlineText}>Settings</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+          <TouchableOpacity 
+            style={styles.signOutButton} 
+            onPress={handleButtonPress({
+              action: createCustomAction(handleSignOut),
+              label: 'Sign Out',
+            })}
+          >
             <Text style={styles.signOutButtonText}>Sign Out</Text>
           </TouchableOpacity>
         </View>

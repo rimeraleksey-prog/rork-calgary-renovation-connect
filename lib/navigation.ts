@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { UserRole } from '@/types';
+import { handleButtonPress, createReplaceAction } from '@/lib/navigation-handler';
 
 export function navigateToHome(userRole: UserRole) {
   console.log('Navigating to home for role:', userRole);
@@ -36,4 +37,11 @@ export function getHomeRoute(userRole: UserRole): string {
   }
 
   return '/';
+}
+
+export function createSafeNavigationHandler(route: string, label?: string) {
+  return handleButtonPress({
+    action: createReplaceAction(route),
+    label: label || route,
+  });
 }
