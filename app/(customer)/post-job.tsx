@@ -65,6 +65,7 @@ const HANDYMAN_SERVICES: HandymanService[] = [
   'Lock Installation',
   'Caulking',
   'Shelf Installation',
+  'Faucet Replacement',
 ];
 
 const CLEANING_SERVICES: CleaningService[] = [
@@ -201,7 +202,7 @@ export default function PostJobScreen() {
           <View style={{ width: 24 }} />
         </View>
 
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <View style={styles.section}>
             <Text style={styles.label}>Project Type *</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
@@ -220,28 +221,35 @@ export default function PostJobScreen() {
           </View>
 
           {isHandymanJob && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Select Services *</Text>
-              <View style={styles.serviceGrid}>
-                {HANDYMAN_SERVICES.map((service) => (
-                  <TouchableOpacity
-                    key={service}
-                    style={[
-                      styles.serviceChip,
-                      selectedHandymanServices.includes(service) && styles.serviceChipActive,
-                    ]}
-                    onPress={() => toggleHandymanService(service)}
-                  >
-                    <Text
+            <View style={styles.dynamicSection}>
+              <View style={styles.dynamicHeader}>
+                <Text style={styles.dynamicTitle}>Handyman Service Details</Text>
+                <Text style={styles.dynamicSubtitle}>Select the services you need and urgency level</Text>
+              </View>
+              
+              <View style={styles.section}>
+                <Text style={styles.label}>Select Services * (Choose all that apply)</Text>
+                <View style={styles.serviceGrid}>
+                  {HANDYMAN_SERVICES.map((service) => (
+                    <TouchableOpacity
+                      key={service}
                       style={[
-                        styles.serviceChipText,
-                        selectedHandymanServices.includes(service) && styles.serviceChipTextActive,
+                        styles.serviceChip,
+                        selectedHandymanServices.includes(service) && styles.serviceChipActive,
                       ]}
+                      onPress={() => toggleHandymanService(service)}
                     >
-                      {service}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <Text
+                        style={[
+                          styles.serviceChipText,
+                          selectedHandymanServices.includes(service) && styles.serviceChipTextActive,
+                        ]}
+                      >
+                        {service}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
             </View>
           )}
@@ -249,17 +257,27 @@ export default function PostJobScreen() {
           {isHandymanJob && (
             <View style={styles.section}>
               <Text style={styles.label}>Level of Urgency *</Text>
-              <View style={styles.grid}>
+              <Text style={styles.helperText}>How quickly do you need this completed?</Text>
+              <View style={styles.urgencyGrid}>
                 {(['Low', 'Medium', 'Urgent'] as const).map((urgency) => (
                   <TouchableOpacity
                     key={urgency}
-                    style={[styles.gridItem, handymanUrgency === urgency && styles.gridItemActive]}
+                    style={[
+                      styles.urgencyItem,
+                      handymanUrgency === urgency && styles.urgencyItemActive,
+                    ]}
                     onPress={() => setHandymanUrgency(urgency)}
                   >
+                    <View style={[
+                      styles.urgencyIndicator,
+                      urgency === 'Low' && styles.urgencyLow,
+                      urgency === 'Medium' && styles.urgencyMedium,
+                      urgency === 'Urgent' && styles.urgencyHigh,
+                    ]} />
                     <Text
                       style={[
-                        styles.gridItemText,
-                        handymanUrgency === urgency && styles.gridItemTextActive,
+                        styles.urgencyText,
+                        handymanUrgency === urgency && styles.urgencyTextActive,
                       ]}
                     >
                       {urgency}
@@ -271,38 +289,46 @@ export default function PostJobScreen() {
           )}
 
           {isCleaningJob && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Select Cleaning Services *</Text>
-              <View style={styles.serviceGrid}>
-                {CLEANING_SERVICES.map((service) => (
-                  <TouchableOpacity
-                    key={service}
-                    style={[
-                      styles.serviceChip,
-                      selectedCleaningServices.includes(service) && styles.serviceChipActive,
-                    ]}
-                    onPress={() => toggleCleaningService(service)}
-                  >
-                    <Text
+            <View style={styles.dynamicSection}>
+              <View style={styles.dynamicHeader}>
+                <Text style={styles.dynamicTitle}>Cleaning Service Details</Text>
+                <Text style={styles.dynamicSubtitle}>Select the type of cleaning and property details</Text>
+              </View>
+              
+              <View style={styles.section}>
+                <Text style={styles.label}>Type of Cleaning * (Choose all that apply)</Text>
+                <View style={styles.serviceGrid}>
+                  {CLEANING_SERVICES.map((service) => (
+                    <TouchableOpacity
+                      key={service}
                       style={[
-                        styles.serviceChipText,
-                        selectedCleaningServices.includes(service) && styles.serviceChipTextActive,
+                        styles.serviceChip,
+                        selectedCleaningServices.includes(service) && styles.serviceChipActive,
                       ]}
+                      onPress={() => toggleCleaningService(service)}
                     >
-                      {service}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <Text
+                        style={[
+                          styles.serviceChipText,
+                          selectedCleaningServices.includes(service) && styles.serviceChipTextActive,
+                        ]}
+                      >
+                        {service}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
             </View>
           )}
 
           {isCleaningJob && (
             <View style={styles.section}>
-              <Text style={styles.label}>Property Details *</Text>
+              <Text style={styles.label}>Property Size * (Provide at least one)</Text>
+              <Text style={styles.helperText}>This helps cleaners estimate time and cost</Text>
               <View style={styles.inputRow}>
                 <View style={styles.inputHalf}>
-                  <Text style={styles.inputLabel}>Number of Rooms</Text>
+                  <Text style={styles.inputLabel}>Rooms to Clean</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="e.g., 3"
@@ -643,5 +669,78 @@ const styles = StyleSheet.create({
     fontWeight: '500' as const,
     color: Colors.textSecondary,
     marginBottom: 8,
+  },
+  scrollContent: {
+    paddingBottom: 20,
+  },
+  dynamicSection: {
+    backgroundColor: Colors.offWhite,
+    marginHorizontal: 20,
+    marginTop: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  dynamicHeader: {
+    backgroundColor: Colors.deepBlue,
+    padding: 20,
+  },
+  dynamicTitle: {
+    fontSize: 18,
+    fontWeight: '700' as const,
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  dynamicSubtitle: {
+    fontSize: 13,
+    color: Colors.white,
+    opacity: 0.85,
+  },
+  helperText: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginTop: -6,
+    marginBottom: 12,
+  },
+  urgencyGrid: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  urgencyItem: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.border,
+    gap: 8,
+  },
+  urgencyItemActive: {
+    backgroundColor: Colors.deepBlue,
+    borderColor: Colors.deepBlue,
+  },
+  urgencyIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  urgencyLow: {
+    backgroundColor: Colors.success,
+  },
+  urgencyMedium: {
+    backgroundColor: Colors.warning,
+  },
+  urgencyHigh: {
+    backgroundColor: Colors.error,
+  },
+  urgencyText: {
+    fontSize: 14,
+    fontWeight: '600' as const,
+    color: Colors.textPrimary,
+  },
+  urgencyTextActive: {
+    color: Colors.white,
   },
 });

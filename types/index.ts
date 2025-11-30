@@ -44,7 +44,8 @@ export type HandymanService =
   | 'Door Repair'
   | 'Lock Installation'
   | 'Caulking'
-  | 'Shelf Installation';
+  | 'Shelf Installation'
+  | 'Faucet Replacement';
 
 export type HandymanComplexity = 'Small Fix' | 'Medium Repair' | 'Large Task';
 
