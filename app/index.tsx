@@ -77,7 +77,7 @@ export default function WelcomeScreen() {
           <View style={styles.heroSection}>
             <View style={styles.heroImageContainer}>
               <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800' }}
+                source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/v4o99vmb8mdnl48pv3njp' }}
                 style={styles.heroImage}
                 contentFit="cover"
               />
