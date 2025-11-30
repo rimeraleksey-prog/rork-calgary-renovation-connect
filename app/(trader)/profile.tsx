@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, Alert, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, Alert, Image, Modal, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
@@ -79,6 +79,8 @@ export default function ProfileScreen() {
   const [yearsInBusiness, setYearsInBusiness] = useState(myTraderProfile?.yearsInBusiness?.toString() || '');
   const [portfolioImages, setPortfolioImages] = useState<string[]>(myTraderProfile?.portfolioImages || []);
   const [uploadingImage] = useState(false);
+  const [isPortfolioModalVisible, setIsPortfolioModalVisible] = useState(false);
+  const [newPortfolioUrl, setNewPortfolioUrl] = useState('');
   const [handymanServices, setHandymanServices] = useState<HandymanService[]>(myTraderProfile?.handymanServices || []);
   const [cleaningServices, setCleaningServices] = useState<CleaningService[]>(myTraderProfile?.cleaningServices || []);
   const [servicesDescription, setServicesDescription] = useState(myTraderProfile?.servicesDescription || '');
@@ -107,27 +109,23 @@ export default function ProfileScreen() {
     );
   };
 
+  const openPortfolioModal = () => {
+    setNewPortfolioUrl('');
+    setIsPortfolioModalVisible(true);
+  };
+
   const handleAddPortfolioImage = () => {
-    Alert.prompt(
-      'Add Portfolio Image',
-      'Enter image URL (or use a photo from your device)',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Add URL',
-          onPress: (url?: string) => {
-            if (url && url.trim()) {
-              setPortfolioImages((prev) => [...prev, url.trim()]);
-            }
-          },
-        },
-      ],
-      'plain-text',
-      'https://images.unsplash.com/photo-example'
-    );
+    const url = newPortfolioUrl.trim();
+    if (url) {
+      setPortfolioImages((prev) => [...prev, url]);
+      setIsPortfolioModalVisible(false);
+      setNewPortfolioUrl('');
+    }
+  };
+
+  const handleCancelPortfolio = () => {
+    setIsPortfolioModalVisible(false);
+    setNewPortfolioUrl('');
   };
 
   const handleRemovePortfolioImage = (index: number) => {
@@ -475,7 +473,7 @@ export default function ProfileScreen() {
               <TouchableOpacity 
                 style={styles.addPortfolioButton}
                 onPress={handleButtonPress({
-                  action: createCustomAction(handleAddPortfolioImage),
+                  action: createCustomAction(openPortfolioModal),
                   label: 'Add Portfolio Image',
                 })}
                 disabled={uploadingImage}
@@ -525,6 +523,69 @@ export default function ProfileScreen() {
           <View style={{ height: 40 }} />
         </ScrollView>
       </SafeAreaView>
+
+      <Modal
+        visible={isPortfolioModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={handleCancelPortfolio}
+      >
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalOverlay}
+        >
+          <TouchableOpacity 
+            style={styles.modalBackdrop} 
+            activeOpacity={1} 
+            onPress={handleCancelPortfolio}
+          />
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Add Portfolio Image</Text>
+              <TouchableOpacity onPress={handleCancelPortfolio}>
+                <X size={24} color={Colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.modalBody}>
+              <Text style={styles.modalLabel}>Image URL</Text>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="https://images.unsplash.com/photo-example"
+                value={newPortfolioUrl}
+                onChangeText={setNewPortfolioUrl}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="url"
+                placeholderTextColor={Colors.grayLight}
+                autoFocus
+              />
+              <Text style={styles.modalHint}>
+                Paste a URL to showcase your work
+              </Text>
+            </View>
+
+            <View style={styles.modalFooter}>
+              <TouchableOpacity 
+                style={styles.modalCancelButton}
+                onPress={handleCancelPortfolio}
+              >
+                <Text style={styles.modalCancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[
+                  styles.modalAddButton,
+                  !newPortfolioUrl.trim() && styles.modalAddButtonDisabled
+                ]}
+                onPress={handleAddPortfolioImage}
+                disabled={!newPortfolioUrl.trim()}
+              >
+                <Text style={styles.modalAddButtonText}>Add</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </>
   );
 }
@@ -845,5 +906,106 @@ const styles = StyleSheet.create({
   emptyPortfolioSubtext: {
     fontSize: 13,
     color: Colors.textSecondary,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 8,
+      },
+      web: {
+        boxShadow: '0 -4px 12px rgba(0,0,0,0.1)',
+      } as any,
+    }),
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700' as const,
+    color: Colors.textPrimary,
+  },
+  modalBody: {
+    padding: 20,
+  },
+  modalLabel: {
+    fontSize: 14,
+    fontWeight: '600' as const,
+    color: Colors.textPrimary,
+    marginBottom: 8,
+  },
+  modalInput: {
+    backgroundColor: Colors.offWhite,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: Colors.textPrimary,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  modalHint: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginTop: 8,
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingTop: 8,
+  },
+  modalCancelButton: {
+    flex: 1,
+    backgroundColor: Colors.offWhite,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalCancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600' as const,
+    color: Colors.textPrimary,
+  },
+  modalAddButton: {
+    flex: 1,
+    backgroundColor: Colors.deepBlue,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalAddButtonDisabled: {
+    backgroundColor: Colors.grayLight,
+    opacity: 0.5,
+  },
+  modalAddButtonText: {
+    fontSize: 16,
+    fontWeight: '700' as const,
+    color: Colors.white,
   },
 });
