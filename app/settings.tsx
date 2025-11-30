@@ -113,6 +113,9 @@ export default function SettingsScreen() {
             <TouchableOpacity 
               style={styles.settingRow}
               onPress={handleButtonPress({
+                action: createCustomAction(() => {
+                  console.log('Language settings clicked');
+                }),
                 label: 'Language Settings',
               })}
             >
@@ -125,6 +128,9 @@ export default function SettingsScreen() {
             <TouchableOpacity 
               style={styles.settingRow}
               onPress={handleButtonPress({
+                action: createCustomAction(() => {
+                  console.log('Region settings clicked');
+                }),
                 label: 'Region Settings',
               })}
             >
@@ -144,6 +150,9 @@ export default function SettingsScreen() {
             <TouchableOpacity 
               style={styles.settingRow}
               onPress={handleButtonPress({
+                action: createCustomAction(() => {
+                  console.log('Change password clicked');
+                }),
                 label: 'Change Password',
               })}
             >
@@ -156,6 +165,9 @@ export default function SettingsScreen() {
             <TouchableOpacity 
               style={styles.settingRow}
               onPress={handleButtonPress({
+                action: createCustomAction(() => {
+                  console.log('Privacy settings clicked');
+                }),
                 label: 'Privacy Settings',
               })}
             >
